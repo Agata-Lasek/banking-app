@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+  pgadmin:
+    image: dpage/pgadmin4:8.0
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - 5050:5050
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+
+volumes:
+  postgres-data:
+  pgadmin-data:
