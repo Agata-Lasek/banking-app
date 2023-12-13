@@ -27,7 +27,8 @@ router = APIRouter(
     "",
     summary="Create a new customer customer",
     description="Create a new customer and an account for them.",
-    response_model=Customer
+    response_model=Customer,
+    status_code=status.HTTP_201_CREATED
 )
 def create_customer(
         *,

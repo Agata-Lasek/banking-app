@@ -24,7 +24,8 @@ MAX_ACCOUNTS_PER_CUSTOMER = 5
 @router.post(
     "",
     summary="Create a new banking account",
-    response_model=Account
+    response_model=Account,
+    status_code=status.HTTP_201_CREATED
 )
 def create_account(
         *,
