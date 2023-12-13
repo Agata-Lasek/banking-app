@@ -9,6 +9,10 @@ from src.schemas.account import (
     Account,
     AccountCreate,
 )
+from src.schemas.transaction import (
+    Transaction,
+    TransferCreate
+)
 
 __all__ = [
     "Token",
@@ -18,5 +22,7 @@ __all__ = [
     "CustomerUpdate",
     "HealthCheck",
     "Account",
-    "AccountCreate"
+    "AccountCreate",
+    "Transaction",
+    "TransferCreate"
 ]

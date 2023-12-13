@@ -35,3 +35,9 @@ def create_account(session: Session, account_in: AccountCreate, customer_id: int
     )
     session.add(account)
     return account
+
+
+def update_account(session: Session, account_id: int, balance: float) -> Account:
+    account = get_account_by_id(session, account_id)
+    account.balance = balance
+    return account

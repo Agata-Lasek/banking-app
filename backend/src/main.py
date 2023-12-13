@@ -5,10 +5,13 @@ from src.core.settings import settings
 from src.endpoints import routers
 from src import __version__
 
+
 app = FastAPI(
     title="banking-app",
     version=__version__,
-    openapi_url=f"{settings.API_PATH}/openapi.json"
+    openapi_url=f"{settings.API_PATH}/openapi.json",
+    description="A simple banking app with no special administrative accounts, but only providing basic functionality "
+                "for the end user."
 )
 
 if settings.CORS_ORIGINS:

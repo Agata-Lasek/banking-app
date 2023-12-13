@@ -65,8 +65,6 @@ def get_customer_by_id(
     if customer_id != current_customer.id:
         raise HTTP403Exception()
     customer = crud.customer.get_customer_by_id(session, customer_id)
-    if customer is None:
-        raise HTTP404Exception()
     return customer
 
 

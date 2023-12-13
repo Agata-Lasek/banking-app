@@ -3,7 +3,8 @@ from src.endpoints import (
     auth,
     health,
     account,
-    self
+    self,
+    transaction
 )
 
 routers = [
@@ -11,7 +12,8 @@ routers = [
     auth.router,
     customer.router,
     self.router,
-    account.router
+    account.router,
+    transaction.router
 ]
 
 __all__ = [

@@ -27,7 +27,7 @@ class Transaction(Base):
     __tablename__ = "transactions"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id"), unique=True, index=True)
+    account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id"), index=True)
     balance_before: Mapped[float] = mapped_column(Numeric(12, 2))
     balance_after: Mapped[float] = mapped_column(Numeric(12, 2))
     description: Mapped[str]

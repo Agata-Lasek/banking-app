@@ -10,3 +10,7 @@ Version 0.2.0:
     * Add creation of accounts when creating a customer,
     * Health check endpoint now returns the API version,
     * Add "\me" endpoint to easier obtain current customer resources.
+
+Version 0.3.0:
+    * Add transactions schemas and endpoints,
+    * Now there is possibility to create transfer funds between accounts.
