@@ -5,6 +5,10 @@ from src.schemas.customer import (
     CustomerUpdate
 )
 from src.schemas.health import HealthCheck
+from src.schemas.account import (
+    Account,
+    AccountCreate,
+)
 
 __all__ = [
     "Token",
@@ -12,5 +16,7 @@ __all__ = [
     "Customer",
     "CustomerCreate",
     "CustomerUpdate",
-    "HealthCheck"
+    "HealthCheck",
+    "Account",
+    "AccountCreate"
 ]

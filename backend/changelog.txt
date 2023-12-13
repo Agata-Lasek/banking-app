@@ -1,0 +1,12 @@
+Version 0.1.0:
+    * Add models and migrations using alembic package,
+    * Add basic docker-compose to run postgres and pgadmin,
+    * Add authentication with JWT,
+    * Add health check endpoint,
+    * Add customer endpoints and its CRUD operations.
+
+Version 0.2.0:
+    * Add accounts schemas and endpoints,
+    * Add creation of accounts when creating a customer,
+    * Health check endpoint now returns the API version,
+    * Add "\me" endpoint to easier obtain current customer resources.

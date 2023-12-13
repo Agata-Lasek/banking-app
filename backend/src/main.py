@@ -3,8 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from src.core.settings import settings
 from src.endpoints import routers
-
-__version__ = "0.1.0"
+from src import __version__
 
 app = FastAPI(
     title="banking-app",

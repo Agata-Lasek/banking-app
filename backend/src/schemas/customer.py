@@ -3,35 +3,28 @@ from typing import Optional
 
 
 class CustomerBase(BaseModel):
-    name: Optional[str] = None
+    name: str
+    surname: str
+    email: EmailStr
+    phone: str
+
+
+class CustomerCreate(CustomerBase):
+    password: str
+
+
+class CustomerUpdate(BaseModel):
     surname: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
 
 
-class CustomerCreate(CustomerBase):
-    name: str
-    surname: str
-    email: EmailStr
-    phone: str
-    password: str
-
-
-class CustomerUpdate(CustomerBase):
-    email: Optional[EmailStr] = None
-    phone: Optional[str] = None
-
-
-class CustomerInDBBase(CustomerBase):
-    id: Optional[int] = None
+class CustomerInDB(CustomerBase):
+    id: int
 
     class ConfigDict:
         from_attributes = True
 
 
-class Customer(CustomerInDBBase):
+class Customer(CustomerInDB):
     ...
-
-
-class CustomerInDB(CustomerInDBBase):
-    password: Optional[str] = None

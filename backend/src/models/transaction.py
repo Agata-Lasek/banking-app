@@ -17,9 +17,10 @@ from src.core import Base
 class TransactionType(str, Enum):
     DEPOSIT = "Deposit"
     WITHDRAWAL = "Withdrawal"
-    TRANSFER = "Transfer"
-    PAYMENT = "Payment"
-    LOAN = "Loan"
+    TRANSFER_IN = "Transfer in"
+    TRANSFER_OUT = "Transfer out"
+    LOAN_TAKE = "Loan take"
+    LOAN_PAYOFF = "Loan payoff"
 
 
 class Transaction(Base):

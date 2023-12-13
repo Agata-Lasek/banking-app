@@ -8,11 +8,4 @@ from src.models import (
     Loan
 )
 
-__all__ = [
-    "Base",
-    "Customer",
-    "Account",
-    "Transaction",
-    "Card",
-    "Loan"
-]
+__version__ = "0.2.0"

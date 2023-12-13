@@ -4,12 +4,18 @@ from fastapi import (
     status
 )
 
-from src.dependencies import SessionDep, CurrentCustomerDep
+from src.dependencies import (
+    SessionDep,
+    CurrentCustomerDep
+)
 from src.schemas import (
     Customer,
-    CustomerCreate
+    Account,
+    CustomerCreate,
+    AccountCreate,
 )
 from src import crud
+from src.endpoints.exceptions import HTTP403Exception, HTTP404Exception
 
 router = APIRouter(
     prefix="/customers",
@@ -17,7 +23,12 @@ router = APIRouter(
 )
 
 
-@router.post("", response_model=Customer)
+@router.post(
+    "",
+    summary="Create a new customer customer",
+    description="Create a new customer and an account for them.",
+    response_model=Customer
+)
 def create_customer(
         *,
         session: SessionDep,
@@ -27,17 +38,50 @@ def create_customer(
     if customer is not None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The customer with this email already exists in the system"
+            detail="Customer with this email already exists"
         )
     customer = crud.customer.create_customer(session, customer_in)
+    session.flush()
+    _ = crud.account.create_account(
+        session=session,
+        account_in=AccountCreate(),
+        customer_id=customer.id
+    )
     session.commit()
-    session.refresh(customer)
     return customer
 
 
-@router.get("/me")
-def read_customer_me(
+@router.get(
+    "/{customer_id}",
+    summary="Get a customer details associated with the specified customer",
+    response_model=Customer
+)
+def get_customer_by_id(
+        customer_id: int,
+        *,
         session: SessionDep,
-        customer: CurrentCustomerDep
+        current_customer: CurrentCustomerDep
 ) -> Customer:
+    if customer_id != current_customer.id:
+        raise HTTP403Exception()
+    customer = crud.customer.get_customer_by_id(session, customer_id)
+    if customer is None:
+        raise HTTP404Exception()
     return customer
+
+
+@router.get(
+    "/{customer_id}/accounts",
+    summary="Get all accounts associated with the specified customer",
+    response_model=list[Account]
+)
+def get_all_customer_accounts(
+        customer_id: int,
+        *,
+        session: SessionDep,
+        current_customer: CurrentCustomerDep
+) -> list[Account]:
+    if customer_id != current_customer.id:
+        raise HTTP403Exception()
+    accounts = crud.account.get_customer_accounts(session, current_customer.id)
+    return accounts
