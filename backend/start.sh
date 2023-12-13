@@ -12,9 +12,9 @@ usage() {
   echo "Usage: start.sh [-h] [-p] [-d]"
   echo " "
   echo "options:"
-  echo "-h, --help                show brief help"
-  echo "-p, --production          start production server"
-  echo "-d, --development         start development server"
+  echo "-h  show brief help"
+  echo "-p  start production server"
+  echo "-d  start development server"
 }
 
 while getopts 'hpd' OPTION; do
