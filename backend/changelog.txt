@@ -14,3 +14,7 @@ Version 0.2.0:
 Version 0.3.0:
     * Add transactions schemas and endpoints,
     * Now there is possibility to create transfer funds between accounts.
+
+Version 0.3.1:
+    * Fix required account number length in body,
+    * Fix internal and external transfer functionality.
