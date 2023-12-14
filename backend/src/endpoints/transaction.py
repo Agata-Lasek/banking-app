@@ -40,13 +40,14 @@ def transfer_funds(
             detail="Insufficient funds"
         )
 
-    if receiver_account := crud.account.get_account_by_number(session, transfer_in.receiver) is not None:
-        transaction = crud.transaction.handle_external_transfer(
-            session, sender_account, transfer_in.amount, transfer_in.description
-        )
-    else:
+    receiver_account = crud.account.get_account_by_number(session, transfer_in.receiver)
+    if receiver_account is not None:
         transaction = crud.transaction.handle_internal_transfer(
             session, sender_account, receiver_account, transfer_in.amount, transfer_in.description
+        )
+    else:
+        transaction = crud.transaction.handle_external_transfer(
+            session, sender_account, transfer_in.amount, transfer_in.description
         )
     session.commit()
     return transaction

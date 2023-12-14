@@ -6,12 +6,12 @@ from src.models import TransactionType
 
 class TransferCreateBase(BaseModel):
     amount: float = Field(..., gt=0)
-    sender: str = Field(..., max_length=26)
+    sender: str = Field(..., min_length=26, max_length=26)
     description: str = Field(..., max_length=255)
 
 
 class TransferCreate(TransferCreateBase):
-    receiver: str = Field(..., max_length=26)
+    receiver: str = Field(..., min_length=26, max_length=26)
     description: str = Field(default="Funds transfer", max_length=255)
 
 
