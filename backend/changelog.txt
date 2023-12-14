@@ -18,3 +18,7 @@ Version 0.3.0:
 Version 0.3.1:
     * Fix required account number length in body,
     * Fix internal and external transfer functionality.
+
+Version 0.4.0:
+    * Add endpoints and schemas related to loans,
+    * Add functionality to take and payoff a loan.

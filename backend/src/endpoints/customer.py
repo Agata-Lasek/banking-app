@@ -13,6 +13,7 @@ from src.schemas import (
     Account,
     CustomerCreate,
     AccountCreate,
+    Loan
 )
 from src import crud
 from src.endpoints.exceptions import HTTP403Exception, HTTP404Exception
@@ -84,3 +85,20 @@ def get_all_customer_accounts(
         raise HTTP403Exception()
     accounts = crud.account.get_customer_accounts(session, current_customer.id)
     return accounts
+
+
+@router.get(
+    "/{customer_id}/loans",
+    summary="Get all loans associated with the specified customer",
+    response_model=list[Loan]
+)
+def get_all_customer_loans(
+        customer_id: int,
+        *,
+        session: SessionDep,
+        current_customer: CurrentCustomerDep
+) -> list[Loan]:
+    if customer_id != current_customer.id:
+        raise HTTP403Exception()
+    loans = crud.loan.get_customer_loans(session, current_customer.id)
+    return loans

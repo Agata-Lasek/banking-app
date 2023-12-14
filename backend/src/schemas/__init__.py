@@ -5,13 +5,12 @@ from src.schemas.customer import (
     CustomerUpdate
 )
 from src.schemas.health import HealthCheck
-from src.schemas.account import (
-    Account,
-    AccountCreate,
-)
-from src.schemas.transaction import (
-    Transaction,
-    TransferCreate
+from src.schemas.account import Account, AccountCreate
+from src.schemas.transaction import Transaction, TransferCreate
+from src.schemas.loan import (
+    LoanTake,
+    LoanPayoff,
+    Loan
 )
 
 __all__ = [
@@ -24,5 +23,8 @@ __all__ = [
     "Account",
     "AccountCreate",
     "Transaction",
-    "TransferCreate"
+    "TransferCreate",
+    "Loan",
+    "LoanTake",
+    "LoanPayoff"
 ]

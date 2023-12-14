@@ -5,7 +5,11 @@ from fastapi import (
 )
 
 from src.dependencies import SessionDep, CurrentCustomerDep
-from src.schemas import Customer, Account
+from src.schemas import (
+    Customer,
+    Account,
+    Loan
+)
 from src import crud
 
 router = APIRouter(
@@ -38,3 +42,16 @@ def get_current_customer_accounts(
         customer: CurrentCustomerDep
 ) -> list[Account]:
     return crud.account.get_customer_accounts(session, customer.id)
+
+
+@router.get(
+    "/loans",
+    summary="Get all current customer loans",
+    response_model=list[Loan]
+)
+def get_current_customer_loans(
+        *,
+        session: SessionDep,
+        customer: CurrentCustomerDep
+) -> list[Loan]:
+    return crud.loan.get_customer_loans(session, customer.id)
