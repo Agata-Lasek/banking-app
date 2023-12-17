@@ -6,7 +6,7 @@ from fastapi import (
 
 from src.dependencies import SessionDep, CurrentCustomerDep
 from src import crud
-from src.endpoints.exceptions import HTTP403Exception
+from src.endpoints.exceptions import HTTP403Exception, HTTP404Exception
 from src.schemas import (
     Loan,
     LoanTake,
@@ -31,6 +31,8 @@ def get_loan(
         current_customer: CurrentCustomerDep
 ) -> Loan:
     loan = crud.loan.get_loan_by_id(session, loan_id)
+    if loan is None:
+        raise HTTP404Exception()
     if loan.customer_id != current_customer.id:
         raise HTTP403Exception()
     return loan
