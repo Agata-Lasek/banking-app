@@ -3,6 +3,7 @@ from fastapi import APIRouter, Query
 from src.dependencies import SessionDep, CurrentCustomerDep
 from src.schemas import (
     Customer,
+    CustomerUpdate,
     Account,
     Loan
 )
@@ -24,6 +25,22 @@ def get_current_customer(
         session: SessionDep,
         customer: CurrentCustomerDep
 ) -> Customer:
+    return customer
+
+
+@router.put(
+    "",
+    summary="Update the current customer details",
+    response_model=Customer
+)
+def update_current_customer(
+        *,
+        customer_in: CustomerUpdate,
+        session: SessionDep,
+        customer: CurrentCustomerDep
+) -> Customer:
+    customer = crud.customer.update_customer(session, customer, customer_in)
+    session.commit()
     return customer
 
 

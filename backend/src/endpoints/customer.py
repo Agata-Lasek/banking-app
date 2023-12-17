@@ -11,6 +11,7 @@ from src.dependencies import (
 )
 from src.schemas import (
     Customer,
+    CustomerUpdate,
     Account,
     CustomerCreate,
     AccountCreate,
@@ -68,6 +69,28 @@ def get_customer_by_id(
     if customer_id != current_customer.id:
         raise HTTP403Exception()
     customer = crud.customer.get_customer_by_id(session, customer_id)
+    return customer
+
+
+@router.put(
+    "/{customer_id}",
+    summary="Update a customer details associated with the specified customer",
+    response_model=Customer
+)
+def update_customer(
+        customer_id: int,
+        *,
+        customer_in: CustomerUpdate,
+        session: SessionDep,
+        current_customer: CurrentCustomerDep
+) -> Customer:
+    if customer_id != current_customer.id:
+        raise HTTP403Exception()
+    customer = crud.customer.get_customer_by_id(session, customer_id)
+    if customer is None:
+        raise HTTP404Exception()
+    customer = crud.customer.update_customer(session, customer, customer_in)
+    session.commit()
     return customer
 
 

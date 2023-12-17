@@ -3,7 +3,7 @@ from sqlalchemy.sql.expression import select
 from typing import Optional
 from pydantic import EmailStr
 
-from src.schemas import CustomerCreate
+from src.schemas import CustomerCreate, CustomerUpdate
 from src.models import Customer
 from src.core import security
 
@@ -35,6 +35,15 @@ def create_customer(session: Session, customer_in: CustomerCreate) -> Customer:
     return customer
 
 
+def update_customer(session: Session, customer: Customer, customer_in: CustomerUpdate) -> Customer:
+    customer.surname = customer_in.surname or customer.surname
+    customer.email = customer_in.email or customer.email
+    customer.phone = customer_in.phone or customer.phone
+    session.flush()
+    session.refresh(customer)
+    return customer
+
+
 def authenticate_customer(session: Session, email: str, password: str) -> Optional[Customer]:
     """
     Authenticate a customer by email and password.
@@ -44,10 +53,7 @@ def authenticate_customer(session: Session, email: str, password: str) -> Option
     """
     customer = get_customer_by_email(session, email)
     if customer is not None:
-        mismatch = not security.verify_password(
-            password,
-            customer.password
-        )
+        mismatch = not security.verify_password(password, customer.password)
         if mismatch:
             customer = None
     return customer
