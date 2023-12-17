@@ -8,10 +8,39 @@ from src.models import (
     TransactionType,
     Account
 )
+from src.schemas import TransactionParams
 
 
 def get_transaction_by_id(session: Session, transaction_id: int) -> Optional[Transaction]:
     return session.get(Transaction, transaction_id)
+
+
+def get_account_transactions_by_filter(
+        session: Session,
+        account_id: int,
+        params: TransactionParams
+) -> list[Transaction]:
+    """
+    Get a list of transactions for a given account and params with pagination.
+
+    Returns:
+        List of transactions ordered by creation date in descending order.
+    """
+    statement = select(Transaction).where(Transaction.account_id == account_id)
+    if params.type is not None:
+        statement = statement.where(Transaction.type == params.type)
+    if params.start is not None:
+        statement = statement.where(Transaction.created_at >= params.start)
+    if params.end is not None:
+        statement = statement.where(Transaction.created_at <= params.end)
+
+    statement = (
+        statement
+        .offset(params.offset)
+        .limit(params.limit)
+        .order_by(Transaction.created_at.desc())
+    )
+    return list(session.execute(statement).scalars().all())
 
 
 def get_account_transactions(
@@ -55,6 +84,8 @@ def create_transaction(
         type=transaction_type
     )
     session.add(transaction)
+    session.flush()
+    session.refresh(transaction)
     return transaction
 
 
@@ -81,6 +112,7 @@ def handle_internal_transfer(
         TransactionType.TRANSFER_IN
     )
     receiver.balance = receiver.balance + Decimal(amount)
+    session.flush()
     return transaction
 
 
@@ -99,4 +131,5 @@ def handle_external_transfer(
         session, sender.id, sender.balance, sender.balance - Decimal(amount), description, TransactionType.TRANSFER_OUT
     )
     sender.balance = sender.balance - Decimal(amount)
+    session.flush()
     return transaction

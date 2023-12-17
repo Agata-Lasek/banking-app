@@ -30,6 +30,8 @@ def create_customer(session: Session, customer_in: CustomerCreate) -> Customer:
         password=hashed
     )
     session.add(customer)
+    session.flush()
+    session.refresh(customer)
     return customer
 
 

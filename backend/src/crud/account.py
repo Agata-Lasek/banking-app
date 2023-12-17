@@ -34,10 +34,14 @@ def create_account(session: Session, account_in: AccountCreate, customer_id: int
         type=account_in.type
     )
     session.add(account)
+    session.flush()
+    session.refresh(account)
     return account
 
 
 def update_account(session: Session, account_id: int, balance: float) -> Account:
     account = get_account_by_id(session, account_id)
     account.balance = balance
+    session.flush()
+    session.refresh(account)
     return account

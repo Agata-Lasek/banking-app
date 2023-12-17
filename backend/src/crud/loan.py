@@ -34,6 +34,8 @@ def create_loan(
         amount=amount
     )
     session.add(loan)
+    session.flush()
+    session.refresh(loan)
     return loan
 
 
@@ -48,6 +50,7 @@ def handle_take_loan(session: Session, account: Account, amount: float) -> Loan:
         "Funds transfer related to the taken loan", TransactionType.LOAN_TAKE
     )
     account.balance = account.balance + Decimal(amount)
+    session.flush()
     return loan
 
 
@@ -63,4 +66,5 @@ def handle_payoff_loan(session: Session, loan: Loan, account: Account) -> Loan:
     )
     account.balance = account.balance - Decimal(loan.amount)
     loan.paid_at = datetime.now(tz=timezone.utc)
+    session.flush()
     return loan
