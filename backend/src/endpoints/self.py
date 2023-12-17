@@ -1,8 +1,4 @@
-from fastapi import (
-    APIRouter,
-    HTTPException,
-    status
-)
+from fastapi import APIRouter, Query
 
 from src.dependencies import SessionDep, CurrentCustomerDep
 from src.schemas import (
@@ -50,8 +46,9 @@ def get_current_customer_accounts(
     response_model=list[Loan]
 )
 def get_current_customer_loans(
+        paidoff: bool = Query(False, description="List also paid off loans"),
         *,
         session: SessionDep,
         customer: CurrentCustomerDep
 ) -> list[Loan]:
-    return crud.loan.get_customer_loans(session, customer.id)
+    return crud.loan.get_customer_loans(session, customer.id, paidoff)

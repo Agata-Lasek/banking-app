@@ -1,17 +1,18 @@
 from fastapi import (
     APIRouter,
     HTTPException,
-    status
+    status,
+    Depends
 )
-
 from src.schemas import (
     Account,
     AccountCreate,
-    Transaction
+    Transaction,
+    TransactionParams
 )
 from src.dependencies import SessionDep, CurrentCustomerDep
 from src import crud
-from src.endpoints.exceptions import HTTP403Exception, HTTP404Exception
+from src.endpoints.exceptions import HTTP403Exception
 
 router = APIRouter(
     prefix="/accounts",
@@ -74,8 +75,7 @@ def get_account_by_id(
 )
 def get_account_transactions(
         account_id: int,
-        offset: int = 0,
-        limit: int = 30,
+        params: TransactionParams = Depends(),
         *,
         session: SessionDep,
         current_customer: CurrentCustomerDep
@@ -84,10 +84,5 @@ def get_account_transactions(
     allowed = any([account.id == account_id for account in accounts])
     if not allowed:
         raise HTTP403Exception()
-    transactions = crud.transaction.get_account_transactions(
-        session=session,
-        account_id=account_id,
-        offset=offset,
-        limit=limit
-    )
+    transactions = crud.transaction.get_account_transactions_by_filter(session, account_id, params)
     return transactions

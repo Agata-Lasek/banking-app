@@ -1,7 +1,8 @@
 from fastapi import (
     APIRouter,
     HTTPException,
-    status
+    status,
+    Query
 )
 
 from src.dependencies import (
@@ -94,11 +95,12 @@ def get_all_customer_accounts(
 )
 def get_all_customer_loans(
         customer_id: int,
+        paidoff: bool = Query(False, description="List also paid off loans"),
         *,
         session: SessionDep,
         current_customer: CurrentCustomerDep
 ) -> list[Loan]:
     if customer_id != current_customer.id:
         raise HTTP403Exception()
-    loans = crud.loan.get_customer_loans(session, current_customer.id)
+    loans = crud.loan.get_customer_loans(session, current_customer.id, paidoff)
     return loans
