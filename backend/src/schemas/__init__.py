@@ -6,7 +6,11 @@ from src.schemas.customer import (
 )
 from src.schemas.health import HealthCheck
 from src.schemas.account import Account, AccountCreate
-from src.schemas.transaction import Transaction, TransferCreate
+from src.schemas.transaction import (
+    Transaction,
+    TransferCreate,
+    TransactionParams
+)
 from src.schemas.loan import (
     LoanTake,
     LoanPayoff,
@@ -24,6 +28,7 @@ __all__ = [
     "AccountCreate",
     "Transaction",
     "TransferCreate",
+    "TransactionParams",
     "Loan",
     "LoanTake",
     "LoanPayoff"

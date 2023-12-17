@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
+from typing import Optional
 
 from src.models import TransactionType
 
@@ -13,6 +14,23 @@ class TransferCreateBase(BaseModel):
 class TransferCreate(TransferCreateBase):
     receiver: str = Field(..., min_length=26, max_length=26)
     description: str = Field(default="Funds transfer", max_length=255)
+
+
+class TransactionParams(BaseModel):
+    start: Optional[datetime] = Field(
+        None,
+        description="Start date (isoformat described in RFC3339) of the period to filter transactions"
+    )
+    end: Optional[datetime] = Field(
+        None,
+        description="End date (isoformat described in RFC3339) of the period to filter transactions"
+    )
+    type: Optional[TransactionType] = Field(
+        None,
+        examples=[TransactionType.TRANSFER_IN, TransactionType.TRANSFER_OUT]
+    )
+    offset: int = 0
+    limit: int = 30
 
 
 class TransactionBase(BaseModel):
