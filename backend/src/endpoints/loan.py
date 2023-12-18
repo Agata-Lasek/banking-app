@@ -20,26 +20,8 @@ router = APIRouter(
 )
 
 
-@router.get(
-    "/{loan_id}",
-    summary="Get a loan details associated with the specified loan",
-    response_model=Loan,
-)
-def get_loan(
-        loan_id: int,
-        session: SessionDep,
-        current_customer: CurrentCustomerDep
-) -> Loan:
-    loan = crud.loan.get_loan_by_id(session, loan_id)
-    if loan is None:
-        raise HTTP404Exception()
-    if loan.customer_id != current_customer.id:
-        raise HTTP403Exception()
-    return loan
-
-
 @router.post(
-    "/take",
+    "",
     summary="Take a loan",
     response_model=Loan,
     status_code=status.HTTP_201_CREATED
@@ -63,6 +45,24 @@ def take_loan(
 
     loan = crud.loan.handle_take_loan(session, account, loan_take.amount)
     session.commit()
+    return loan
+
+
+@router.get(
+    "/{loan_id}",
+    summary="Get loan details",
+    response_model=Loan,
+)
+def get_loan(
+        loan_id: int,
+        session: SessionDep,
+        current_customer: CurrentCustomerDep
+) -> Loan:
+    loan = crud.loan.get_loan_by_id(session, loan_id)
+    if loan is None:
+        raise HTTP404Exception()
+    if loan.customer_id != current_customer.id:
+        raise HTTP403Exception()
     return loan
 
 

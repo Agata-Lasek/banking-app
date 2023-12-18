@@ -4,7 +4,6 @@ from src.endpoints import (
     health,
     account,
     self,
-    transaction,
     loan
 )
 
@@ -14,7 +13,6 @@ routers = [
     customer.router,
     self.router,
     account.router,
-    transaction.router,
     loan.router
 ]
 

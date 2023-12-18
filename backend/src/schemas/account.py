@@ -31,6 +31,12 @@ class AccountCreate(AccountBase):
         return self
 
 
+class TransferCreate(BaseModel):
+    amount: float = Field(..., gt=0)
+    receiver: str = Field(..., min_length=26, max_length=26)
+    description: str = Field(default="Funds transfer", max_length=255)
+
+
 class AccountInDB(AccountBase):
     id: int
     customer_id: int = Field(..., serialization_alias="customerId")

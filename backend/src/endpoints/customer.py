@@ -25,10 +25,12 @@ router = APIRouter(
     tags=["customers"],
 )
 
+MAX_ACCOUNTS_PER_CUSTOMER = 5
+
 
 @router.post(
     "",
-    summary="Create a new customer customer",
+    summary="Create a new customer",
     description="Create a new customer and an account for them.",
     response_model=Customer,
     status_code=status.HTTP_201_CREATED
@@ -57,7 +59,7 @@ def create_customer(
 
 @router.get(
     "/{customer_id}",
-    summary="Get a customer details associated with the specified customer",
+    summary="Get customer details",
     response_model=Customer
 )
 def get_customer_by_id(
@@ -74,7 +76,7 @@ def get_customer_by_id(
 
 @router.put(
     "/{customer_id}",
-    summary="Update a customer details associated with the specified customer",
+    summary="Update customer details",
     response_model=Customer
 )
 def update_customer(
@@ -96,7 +98,7 @@ def update_customer(
 
 @router.get(
     "/{customer_id}/accounts",
-    summary="Get all accounts associated with the specified customer",
+    summary="Get customer accounts",
     response_model=list[Account]
 )
 def get_all_customer_accounts(
@@ -111,9 +113,40 @@ def get_all_customer_accounts(
     return accounts
 
 
+@router.post(
+    "/{customer_id}/accounts",
+    summary="Create new bank account",
+    response_model=Account,
+    status_code=status.HTTP_201_CREATED
+)
+def create_account(
+        customer_id: int,
+        *,
+        session: SessionDep,
+        current_customer: CurrentCustomerDep,
+        account_in: AccountCreate
+) -> Account:
+    if customer_id != current_customer.id:
+        raise HTTP403Exception(detail="You are not allowed to create an account for this customer")
+
+    accounts = crud.account.get_customer_accounts(session, customer_id)
+    if len(accounts) >= MAX_ACCOUNTS_PER_CUSTOMER:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"The maximum number of accounts per customer ({MAX_ACCOUNTS_PER_CUSTOMER}) has been reached"
+        )
+    account = crud.account.create_account(
+        session=session,
+        account_in=account_in,
+        customer_id=customer_id
+    )
+    session.commit()
+    return account
+
+
 @router.get(
     "/{customer_id}/loans",
-    summary="Get all loans associated with the specified customer",
+    summary="Get customer loans",
     response_model=list[Loan]
 )
 def get_all_customer_loans(

@@ -5,12 +5,12 @@ from src.schemas.customer import (
     CustomerUpdate
 )
 from src.schemas.health import HealthCheck
-from src.schemas.account import Account, AccountCreate
-from src.schemas.transaction import (
-    Transaction,
-    TransferCreate,
-    TransactionParams
+from src.schemas.account import (
+    Account,
+    AccountCreate,
+    TransferCreate
 )
+from src.schemas.transaction import Transaction, TransactionParams
 from src.schemas.loan import (
     LoanTake,
     LoanPayoff,

@@ -17,7 +17,7 @@ router = APIRouter(
 
 @router.get(
     "",
-    summary="Get the current customer details",
+    summary="Get current customer details",
     response_model=Customer
 )
 def get_current_customer(
@@ -30,7 +30,7 @@ def get_current_customer(
 
 @router.put(
     "",
-    summary="Update the current customer details",
+    summary="Update current customer details",
     response_model=Customer
 )
 def update_current_customer(
@@ -46,7 +46,7 @@ def update_current_customer(
 
 @router.get(
     "/accounts",
-    summary="Get all current customer accounts",
+    summary="Get current customer accounts",
     response_model=list[Account]
 )
 def get_current_customer_accounts(
@@ -59,7 +59,7 @@ def get_current_customer_accounts(
 
 @router.get(
     "/loans",
-    summary="Get all current customer loans",
+    summary="Get current customer loans",
     response_model=list[Loan]
 )
 def get_current_customer_loans(
