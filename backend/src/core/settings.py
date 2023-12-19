@@ -1,3 +1,5 @@
+import os
+from dotenv import dotenv_values
 from pydantic_settings import BaseSettings
 from pydantic import (
     AnyHttpUrl,
@@ -7,6 +9,11 @@ from pydantic import (
 )
 from typing import Optional, Union
 from secrets import token_urlsafe
+
+env_vars = dotenv_values('.env')
+
+for key, value in env_vars.items():
+    os.environ[key] = value
 
 
 class Settings(BaseSettings):
@@ -51,6 +58,5 @@ class Settings(BaseSettings):
             password=info.data.get("POSTGRES_PASSWORD"),
             path=f"{info.data.get('POSTGRES_DB') or ''}"
         )
-
 
 settings = Settings()
