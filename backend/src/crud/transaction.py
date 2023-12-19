@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from decimal import Decimal
 from sqlalchemy.sql.expression import select
 from typing import Optional
+import requests
+from requests.exceptions import HTTPError
 
 from src.models import (
     Transaction,
@@ -57,6 +59,28 @@ def create_transaction(
     session.add(transaction)
     return transaction
 
+    
+def get_exchange_rate(currency):
+    try:
+        url = f'http://api.nbp.pl/api/' \
+              f'exchangerates/rates/a/' \
+              f'{currency}/' \
+              f'?format=json'
+        response = requests.get(url)
+    except HTTPError as http_error:
+        print(f'HTTP error: {http_error}')
+        return None 
+    except Exception as e:
+        print(f'Other exception: {e}')
+        return None  # Zwracamy None w przypadku ogólnego błędu
+    else:
+        if response.status_code == 200:
+            # Zwracamy wartość kursu waluty
+            return response.json()['rates'][0]['mid']
+        else:
+            print(f'Error: {response.status_code}')
+            return None 
+        
 
 def handle_internal_transfer(
         session: Session,
@@ -74,8 +98,36 @@ def handle_internal_transfer(
         session, sender.id, sender.balance, sender.balance - Decimal(amount), description, TransactionType.TRANSFER_OUT
     )
     sender.balance = sender.balance - Decimal(amount)
+    
+    
+    # TODO: Implement currency conversion
+    if sender.currency == 'PLN':
+        if receiver.currency != 'PLN':
+            exchange_rate = get_exchange_rate(receiver.currency)
+            amount = Decimal(amount) / exchange_rate
+        else:
+            amount = Decimal(amount)
+            
+    elif sender.currency != 'PLN':
+        if receiver.currency == 'PLN':
+            exchange_rate2 = get_exchange_rate(sender.currency)
+            amount = Decimal(amount) * exchange_rate2
+        elif receiver.currency != 'PLN':
+            exchange_rate2 = get_exchange_rate(sender.currency)
+            amount = Decimal(amount) * exchange_rate2
+            exchange_rate = get_exchange_rate(receiver.currency)
+            amount = Decimal(amount) / exchange_rate
+            
+    
+
+        
+            
+    
 
     # TODO: Implement currency conversion
+    
+    
+    
     _ = create_transaction(
         session, receiver.id, receiver.balance, receiver.balance + Decimal(amount), description,
         TransactionType.TRANSFER_IN
