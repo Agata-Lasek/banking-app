@@ -4,11 +4,6 @@ from fastapi import (
     status,
     Body
 )
-from datetime import (
-    datetime,
-    timezone,
-    timedelta
-)
 from decimal import Decimal
 
 from src.dependencies import (
@@ -16,11 +11,7 @@ from src.dependencies import (
     ValidCardOwnerDep,
     UsableCardDep
 )
-from src.schemas import (
-    Card,
-    Transaction,
-    TransactionParams
-)
+from src.schemas import Card, Transaction
 from src.models import TransactionType
 from src.core import security
 from src import crud
@@ -118,14 +109,7 @@ def withdraw_money(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Insufficient funds"
         )
-    today = datetime.now(tz=timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-    params = TransactionParams(
-        start=today,
-        end=today + timedelta(days=1),
-        type=TransactionType.WITHDRAWAL,
-    )
-    transactions = crud.transaction.get_account_transactions_by_filter(session, card.account_id, params)
-    total = sum(transaction.balance_after - transaction.balance_before for transaction in transactions)
+    total = crud.transaction.get_transactions_sum_within_24_hours(session, card.account_id, TransactionType.WITHDRAWAL)
     if abs(total) + amount > MAX_WITHDRAW_FOUNDS_PER_DAY:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -153,14 +137,7 @@ def deposit_money(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect PIN"
         )
-    today = datetime.now(tz=timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-    params = TransactionParams(
-        start=today,
-        end=today + timedelta(days=1),
-        type=TransactionType.DEPOSIT,
-    )
-    transactions = crud.transaction.get_account_transactions_by_filter(session, card.account_id, params)
-    total = sum(transaction.balance_after - transaction.balance_before for transaction in transactions)
+    total = crud.transaction.get_transactions_sum_within_24_hours(session, card.account_id, TransactionType.DEPOSIT)
     if total + amount > MAX_DEPOSIT_FOUNDS_PER_DAY:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

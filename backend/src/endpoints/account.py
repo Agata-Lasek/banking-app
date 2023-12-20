@@ -77,7 +77,7 @@ def get_account_transactions(
         params: TransactionParams = Depends(),
         *,
         session: SessionDep,
-        account: ValidAccountOwnerDep
+        _: ValidAccountOwnerDep
 ) -> list[Transaction]:
     return crud.transaction.get_account_transactions_by_filter(session, account_id, params)
 
@@ -93,7 +93,7 @@ def get_account_cards(
         blocked: bool = Query(True, description="List blocked cards"),
         *,
         session: SessionDep,
-        account: ValidAccountOwnerDep
+        _: ValidAccountOwnerDep
 ) -> list[Card]:
     return crud.card.get_account_cards(session, account_id, expired, blocked)
 

@@ -1,7 +1,13 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from decimal import Decimal
 from sqlalchemy.sql.expression import select
 from typing import Optional
+from datetime import (
+    datetime,
+    timezone,
+    timedelta
+)
 
 from src.models import (
     Transaction,
@@ -169,3 +175,22 @@ def handle_deposit(
     account.balance = account.balance + amount
     session.flush()
     return transaction
+
+
+def get_transactions_sum_within_24_hours(
+        session: Session,
+        account_id: int,
+        transaction_type: TransactionType
+) -> Decimal:
+    """
+    Get the sum of transactions of a given type for a given account within the last 24 hours.
+    """
+    today = datetime.now(tz=timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    statement = (
+        select(func.coalesce(func.sum(Transaction.balance_after - Transaction.balance_before), 0))
+        .where(Transaction.account_id == account_id)
+        .where(Transaction.created_at >= today)
+        .where(Transaction.created_at <= today + timedelta(days=1))
+        .where(Transaction.type == transaction_type)
+    )
+    return session.execute(statement).scalar_one()
