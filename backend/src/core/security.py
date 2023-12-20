@@ -28,9 +28,10 @@ def create_access_token(
     return encoded_jwt
 
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+def verify(plain: str, hashed: str) -> bool:
+    return pwd_context.verify(plain, hashed)
 
 
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+def get_hash(plain: str) -> str:
+    return pwd_context.hash(plain)
+
