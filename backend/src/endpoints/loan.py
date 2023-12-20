@@ -82,15 +82,20 @@ def payoff_loan(
         )
 
     account = crud.account.get_account_by_number(session, loan_payoff.account)
-    if account.type != AccountType.CHECKING:
+    if account is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="You can payoff a loan only from checking account"
+            detail="Account not found"
         )
     if account.customer_id != current_customer.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You're not allowed to use this account to payoff this loan"
+        )
+    if account.type != AccountType.CHECKING:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You can payoff a loan only from checking account"
         )
     if account.balance < loan.amount:
         raise HTTPException(

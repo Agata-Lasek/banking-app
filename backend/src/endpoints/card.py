@@ -14,7 +14,7 @@ from decimal import Decimal
 from src.dependencies import (
     SessionDep,
     ValidCardOwnerDep,
-    ActiveCardDep
+    UsableCardDep
 )
 from src.schemas import (
     Card,
@@ -106,7 +106,7 @@ def withdraw_money(
         amount: Decimal = Body(..., gt=0),
         pin: str = Body(..., min_length=4, max_length=4),
         session: SessionDep,
-        card: ActiveCardDep
+        card: UsableCardDep
 ) -> Transaction:
     if not security.verify(pin, card.pin):
         raise HTTPException(
@@ -126,7 +126,7 @@ def withdraw_money(
     )
     transactions = crud.transaction.get_account_transactions_by_filter(session, card.account_id, params)
     total = sum(transaction.balance_after - transaction.balance_before for transaction in transactions)
-    if abs(total + amount) > MAX_WITHDRAW_FOUNDS_PER_DAY:
+    if abs(total) + amount > MAX_WITHDRAW_FOUNDS_PER_DAY:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"You can withdraw up to {MAX_WITHDRAW_FOUNDS_PER_DAY} {card.account.currency.value} per day"
@@ -146,7 +146,7 @@ def deposit_money(
         amount: Decimal = Body(..., gt=0),
         pin: str = Body(..., min_length=4, max_length=4),
         session: SessionDep,
-        card: ActiveCardDep
+        card: UsableCardDep
 ) -> Transaction:
     if not security.verify(pin, card.pin):
         raise HTTPException(

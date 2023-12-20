@@ -39,13 +39,18 @@ def valid_card_owner(
 ValidCardOwnerDep = Annotated[Card, Depends(valid_card_owner)]
 
 
-def active_card(card: ValidCardOwnerDep) -> Card:
+def usable_card(card: ValidCardOwnerDep) -> Card:
     if card.pin is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="You need to activate the card first"
         )
+    if card.blocked_at is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Card is blocked"
+        )
     return card
 
 
-ActiveCardDep = Annotated[Card, Depends(active_card)]
+UsableCardDep = Annotated[Card, Depends(usable_card)]
