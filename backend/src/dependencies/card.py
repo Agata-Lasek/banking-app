@@ -37,3 +37,15 @@ def valid_card_owner(
 
 
 ValidCardOwnerDep = Annotated[Card, Depends(valid_card_owner)]
+
+
+def active_card(card: ValidCardOwnerDep) -> Card:
+    if card.pin is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You need to activate the card first"
+        )
+    return card
+
+
+ActiveCardDep = Annotated[Card, Depends(active_card)]

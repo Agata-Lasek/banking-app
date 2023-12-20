@@ -133,3 +133,39 @@ def handle_external_transfer(
     sender.balance = sender.balance - Decimal(amount)
     session.flush()
     return transaction
+
+
+def handle_withdrawal(
+        session: Session,
+        account: Account,
+        amount: Decimal
+) -> Transaction:
+    """
+    Handle a withdrawal from an account, update the account balance and return
+    the transaction created for the account.
+    """
+    transaction = create_transaction(
+        session, account.id, account.balance, account.balance - amount,
+        "Withdrawal of funds using the card", TransactionType.WITHDRAWAL
+    )
+    account.balance = account.balance - amount
+    session.flush()
+    return transaction
+
+
+def handle_deposit(
+        session: Session,
+        account: Account,
+        amount: Decimal
+) -> Transaction:
+    """
+    Handle a deposit to an account, update the account balance and return the
+    transaction created for the account.
+    """
+    transaction = create_transaction(
+        session, account.id, account.balance, account.balance + amount,
+        "Deposit of funds using the card", TransactionType.DEPOSIT
+    )
+    account.balance = account.balance + amount
+    session.flush()
+    return transaction
