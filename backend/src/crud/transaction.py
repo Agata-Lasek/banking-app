@@ -93,7 +93,7 @@ def handle_internal_transfer(
         session: Session,
         sender: Account,
         receiver: Account,
-        amount: float,
+        amount: Decimal,
         description: str
 ) -> Transaction:
     """
@@ -102,16 +102,16 @@ def handle_internal_transfer(
     created for the sender's account.
     """
     transaction = create_transaction(
-        session, sender.id, sender.balance, sender.balance - Decimal(amount), description, TransactionType.TRANSFER_OUT
+        session, sender.id, sender.balance, sender.balance - amount, description, TransactionType.TRANSFER_OUT
     )
-    sender.balance = sender.balance - Decimal(amount)
+    sender.balance = sender.balance - amount
 
     # TODO: Implement currency conversion
     _ = create_transaction(
-        session, receiver.id, receiver.balance, receiver.balance + Decimal(amount), description,
+        session, receiver.id, receiver.balance, receiver.balance + amount, description,
         TransactionType.TRANSFER_IN
     )
-    receiver.balance = receiver.balance + Decimal(amount)
+    receiver.balance = receiver.balance + amount
     session.flush()
     return transaction
 
@@ -119,7 +119,7 @@ def handle_internal_transfer(
 def handle_external_transfer(
         session: Session,
         sender: Account,
-        amount: float,
+        amount: Decimal,
         description: str
 ) -> Transaction:
     """
@@ -128,9 +128,9 @@ def handle_external_transfer(
     sender's account.
     """
     transaction = create_transaction(
-        session, sender.id, sender.balance, sender.balance - Decimal(amount), description, TransactionType.TRANSFER_OUT
+        session, sender.id, sender.balance, sender.balance - amount, description, TransactionType.TRANSFER_OUT
     )
-    sender.balance = sender.balance - Decimal(amount)
+    sender.balance = sender.balance - amount
     session.flush()
     return transaction
 

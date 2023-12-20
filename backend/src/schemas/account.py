@@ -3,6 +3,7 @@ from pydantic import (
     model_validator,
     Field
 )
+from decimal import Decimal
 
 from src.models import AccountType, Currency
 
@@ -32,7 +33,7 @@ class AccountCreate(AccountBase):
 
 
 class TransferCreate(BaseModel):
-    amount: float = Field(..., gt=0)
+    amount: Decimal = Field(..., gt=0)
     receiver: str = Field(..., min_length=26, max_length=26)
     description: str = Field(default="Funds transfer", max_length=255)
 
