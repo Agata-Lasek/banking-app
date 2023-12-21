@@ -22,7 +22,6 @@ router = APIRouter(
 )
 def get_current_customer(
         *,
-        session: SessionDep,
         customer: CurrentCustomerDep
 ) -> Customer:
     return customer

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import (
     Mapped,
-    mapped_column
+    mapped_column,
+    relationship
 )
 from sqlalchemy import (
     ForeignKey,
@@ -28,6 +29,7 @@ class Transaction(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id"), index=True)
+    account: Mapped["Account"] = relationship(back_populates="transactions")
     balance_before: Mapped[float] = mapped_column(Numeric(12, 2))
     balance_after: Mapped[float] = mapped_column(Numeric(12, 2))
     description: Mapped[str]

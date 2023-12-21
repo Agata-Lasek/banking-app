@@ -16,6 +16,7 @@ from src.schemas.loan import (
     LoanPayoff,
     Loan
 )
+from src.schemas.card import Card
 
 __all__ = [
     "Token",
@@ -31,5 +32,6 @@ __all__ = [
     "TransactionParams",
     "Loan",
     "LoanTake",
-    "LoanPayoff"
+    "LoanPayoff",
+    "Card"
 ]

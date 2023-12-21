@@ -19,7 +19,7 @@ def get_customer_by_email(session: Session, email: EmailStr) -> Optional[Custome
 
 
 def create_customer(session: Session, customer_in: CustomerCreate) -> Customer:
-    hashed = security.get_password_hash(
+    hashed = security.get_hash(
         customer_in.password
     )
     customer = Customer(
@@ -53,7 +53,7 @@ def authenticate_customer(session: Session, email: str, password: str) -> Option
     """
     customer = get_customer_by_email(session, email)
     if customer is not None:
-        mismatch = not security.verify_password(password, customer.password)
+        mismatch = not security.verify(password, customer.password)
         if mismatch:
             customer = None
     return customer

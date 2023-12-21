@@ -1,7 +1,13 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from decimal import Decimal
 from sqlalchemy.sql.expression import select
 from typing import Optional
+from datetime import (
+    datetime,
+    timezone,
+    timedelta
+)
 
 from src.models import (
     Transaction,
@@ -93,7 +99,7 @@ def handle_internal_transfer(
         session: Session,
         sender: Account,
         receiver: Account,
-        amount: float,
+        amount: Decimal,
         description: str
 ) -> Transaction:
     """
@@ -102,16 +108,16 @@ def handle_internal_transfer(
     created for the sender's account.
     """
     transaction = create_transaction(
-        session, sender.id, sender.balance, sender.balance - Decimal(amount), description, TransactionType.TRANSFER_OUT
+        session, sender.id, sender.balance, sender.balance - amount, description, TransactionType.TRANSFER_OUT
     )
-    sender.balance = sender.balance - Decimal(amount)
+    sender.balance = sender.balance - amount
 
     # TODO: Implement currency conversion
     _ = create_transaction(
-        session, receiver.id, receiver.balance, receiver.balance + Decimal(amount), description,
+        session, receiver.id, receiver.balance, receiver.balance + amount, description,
         TransactionType.TRANSFER_IN
     )
-    receiver.balance = receiver.balance + Decimal(amount)
+    receiver.balance = receiver.balance + amount
     session.flush()
     return transaction
 
@@ -119,7 +125,7 @@ def handle_internal_transfer(
 def handle_external_transfer(
         session: Session,
         sender: Account,
-        amount: float,
+        amount: Decimal,
         description: str
 ) -> Transaction:
     """
@@ -128,8 +134,63 @@ def handle_external_transfer(
     sender's account.
     """
     transaction = create_transaction(
-        session, sender.id, sender.balance, sender.balance - Decimal(amount), description, TransactionType.TRANSFER_OUT
+        session, sender.id, sender.balance, sender.balance - amount, description, TransactionType.TRANSFER_OUT
     )
-    sender.balance = sender.balance - Decimal(amount)
+    sender.balance = sender.balance - amount
     session.flush()
     return transaction
+
+
+def handle_withdrawal(
+        session: Session,
+        account: Account,
+        amount: Decimal
+) -> Transaction:
+    """
+    Handle a withdrawal from an account, update the account balance and return
+    the transaction created for the account.
+    """
+    transaction = create_transaction(
+        session, account.id, account.balance, account.balance - amount,
+        "Withdrawal of funds using the card", TransactionType.WITHDRAWAL
+    )
+    account.balance = account.balance - amount
+    session.flush()
+    return transaction
+
+
+def handle_deposit(
+        session: Session,
+        account: Account,
+        amount: Decimal
+) -> Transaction:
+    """
+    Handle a deposit to an account, update the account balance and return the
+    transaction created for the account.
+    """
+    transaction = create_transaction(
+        session, account.id, account.balance, account.balance + amount,
+        "Deposit of funds using the card", TransactionType.DEPOSIT
+    )
+    account.balance = account.balance + amount
+    session.flush()
+    return transaction
+
+
+def get_transactions_sum_within_24_hours(
+        session: Session,
+        account_id: int,
+        transaction_type: TransactionType
+) -> Decimal:
+    """
+    Get the sum of transactions of a given type for a given account within the last 24 hours.
+    """
+    today = datetime.now(tz=timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    statement = (
+        select(func.coalesce(func.sum(Transaction.balance_after - Transaction.balance_before), 0))
+        .where(Transaction.account_id == account_id)
+        .where(Transaction.created_at >= today)
+        .where(Transaction.created_at <= today + timedelta(days=1))
+        .where(Transaction.type == transaction_type)
+    )
+    return session.execute(statement).scalar_one()
