@@ -31,3 +31,10 @@ Version 0.5.0:
     * Add advanced filters for transactions and loans,
     * Add option to update customer details,
     * Change some endpoints according to REST API best practices.
+
+Version 0.6.0:
+    * Add card-related functionality,
+    * Add Dockerfile to containerize the application,
+    * Add Dockerfile to containerize the application,
+    * Fix accessing non-existing account when taking a loan,
+    * Add more dependencies to simplify code.
