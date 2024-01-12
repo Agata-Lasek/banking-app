@@ -1,8 +1,4 @@
-from pydantic import (
-    BaseModel,
-    model_validator,
-    Field
-)
+from pydantic import BaseModel, model_validator, Field
 from decimal import Decimal
 
 from src.models import AccountType, Currency

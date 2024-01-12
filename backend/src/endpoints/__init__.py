@@ -18,6 +18,4 @@ routers = [
     card.router
 ]
 
-__all__ = [
-    "routers"
-]
+__all__ = ["routers"]

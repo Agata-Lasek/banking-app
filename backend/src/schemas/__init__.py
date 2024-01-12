@@ -5,18 +5,11 @@ from src.schemas.customer import (
     CustomerUpdate
 )
 from src.schemas.health import HealthCheck
-from src.schemas.account import (
-    Account,
-    AccountCreate,
-    TransferCreate
-)
+from src.schemas.account import Account, AccountCreate, TransferCreate
 from src.schemas.transaction import Transaction, TransactionParams
-from src.schemas.loan import (
-    LoanTake,
-    LoanPayoff,
-    Loan
-)
+from src.schemas.loan import LoanTake, LoanPayoff, Loan
 from src.schemas.card import Card
+from src.schemas.common import GenericMultipleItems
 
 __all__ = [
     "Token",
@@ -33,5 +26,6 @@ __all__ = [
     "Loan",
     "LoanTake",
     "LoanPayoff",
-    "Card"
+    "Card",
+    "GenericMultipleItems"
 ]

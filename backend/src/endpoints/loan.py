@@ -1,20 +1,8 @@
-from fastapi import (
-    APIRouter,
-    HTTPException,
-    status
-)
+from fastapi import APIRouter, HTTPException, status
 
-from src.dependencies import (
-    SessionDep,
-    CurrentCustomerDep,
-    ValidLoanOwnerDep
-)
+from src.dependencies import SessionDep, CurrentCustomerDep, ValidLoanOwnerDep
 from src import crud
-from src.schemas import (
-    Loan,
-    LoanTake,
-    LoanPayoff
-)
+from src.schemas import Loan, LoanTake, LoanPayoff
 from src.models import AccountType
 
 router = APIRouter(
