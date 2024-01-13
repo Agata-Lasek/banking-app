@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:16
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data/pgdata
     env_file:
@@ -17,11 +17,25 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     ports:
-      - 5050:5050
+      - "5050:5050"
     depends_on:
       - postgres
     env_file:
       - .env
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+        - "3004:3004"
+    volumes:
+        - ./backend/src:/code/backend/src
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+
 
 volumes:
   postgres-data:
