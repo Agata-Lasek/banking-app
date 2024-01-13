@@ -11,12 +11,12 @@ from src.models import TransactionType
 class TransactionParams:
     start_date: Optional[datetime] = Query(
         None,
-        description="Start date of the period to filter transactions (isoformat described in RFC3339)",
+        description="Start date of the period to filter transactions (isoformat described on the RFC3339)",
         alias="startDate"
     )
     end_date: Optional[datetime] = Query(
         None,
-        description="End date of the period to filter transactions (isoformat described in RFC3339)",
+        description="End date of the period to filter transactions (isoformat described on the RFC3339)",
         alias="endDate"
     )
     type: Optional[Literal["deposit", "withdrawal", "transferin", "transferout", "loantake", "loanpayoff"]] = Query(
