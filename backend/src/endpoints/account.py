@@ -85,7 +85,7 @@ def get_account_transactions(
 @router.get(
     "/{account_id}/cards",
     summary="Get bank account cards",
-    response_model=GenericMultipleItems[list[Card]]
+    response_model=GenericMultipleItems[Card]
 )
 def get_account_cards(
         account_id: int,
