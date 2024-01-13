@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
-PhoneNumber.phone_format = 'E164'
+PhoneNumber.phone_format = "E164"
 
 
 class CustomerBase(BaseModel):

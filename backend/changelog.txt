@@ -38,3 +38,9 @@ Version 0.6.0:
     * Add Dockerfile to containerize the application,
     * Fix accessing non-existing account when taking a loan,
     * Add more dependencies to simplify code.
+
+Version 0.7.0:
+    * List responses are more user-friendly,
+    * Transactions are filtered with usage of literals instead of enum values,
+    * Add validation of phone number when creating a customer,
+    * Add password validation when creating a customer.
