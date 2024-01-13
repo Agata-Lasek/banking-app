@@ -4,8 +4,9 @@ from src.dependencies import SessionDep, CurrentCustomerDep
 from src.schemas import (
     Customer,
     CustomerUpdate,
+    Loan,
     Account,
-    Loan
+    GenericMultipleItems
 )
 from src import crud
 
@@ -46,25 +47,26 @@ def update_current_customer(
 @router.get(
     "/accounts",
     summary="Get current customer accounts",
-    response_model=list[Account]
+    response_model=GenericMultipleItems[Account]
 )
 def get_current_customer_accounts(
-        *,
         session: SessionDep,
         customer: CurrentCustomerDep
-) -> list[Account]:
-    return crud.account.get_customer_accounts(session, customer.id)
+) -> GenericMultipleItems[Account]:
+    accounts = crud.account.get_customer_accounts(session, customer.id)
+    return GenericMultipleItems[Account](items=[Account(**vars(a)) for a in accounts])
 
 
 @router.get(
     "/loans",
     summary="Get current customer loans",
-    response_model=list[Loan]
+    response_model=GenericMultipleItems[Loan]
 )
 def get_current_customer_loans(
         paidoff: bool = Query(False, description="List also paid off loans"),
         *,
         session: SessionDep,
         customer: CurrentCustomerDep
-) -> list[Loan]:
-    return crud.loan.get_customer_loans(session, customer.id, paidoff)
+) -> GenericMultipleItems[Loan]:
+    loans = crud.loan.get_customer_loans(session, customer.id, paidoff)
+    return GenericMultipleItems[Loan](items=[Loan(**vars(l)) for l in loans])

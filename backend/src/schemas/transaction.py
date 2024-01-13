@@ -1,22 +1,28 @@
 from pydantic import BaseModel, Field
+from fastapi import Query
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
+from dataclasses import dataclass
 
 from src.models import TransactionType
 
 
-class TransactionParams(BaseModel):
-    start: Optional[datetime] = Field(
+@dataclass
+class TransactionParams:
+    start_date: Optional[datetime] = Query(
         None,
-        description="Start date (isoformat described in RFC3339) of the period to filter transactions"
+        description="Start date of the period to filter transactions (isoformat described on the RFC3339)",
+        alias="startDate"
     )
-    end: Optional[datetime] = Field(
+    end_date: Optional[datetime] = Query(
         None,
-        description="End date (isoformat described in RFC3339) of the period to filter transactions"
+        description="End date of the period to filter transactions (isoformat described on the RFC3339)",
+        alias="endDate"
     )
-    type: Optional[TransactionType] = Field(
+    type: Optional[Literal["deposit", "withdrawal", "transferin", "transferout", "loantake", "loanpayoff"]] = Query(
         None,
-        examples=[TransactionType.TRANSFER_IN, TransactionType.TRANSFER_OUT]
+        description="Type of transactions to filter (allowed types: deposit, withdrawal, transferin, transferout, "
+                    "loantake, loanpayoff)",
     )
     offset: int = 0
     limit: int = 30

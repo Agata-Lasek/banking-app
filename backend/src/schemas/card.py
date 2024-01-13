@@ -7,7 +7,7 @@ class CardBase(BaseModel):
     account_id: int = Field(..., serialization_alias="accountId")
     number: str
     cvv: str
-    expiry_at: datetime
+    expiry_at: datetime = Field(..., serialization_alias="expiryAt")
 
 
 class CardInDB(CardBase):
