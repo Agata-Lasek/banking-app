@@ -11,7 +11,8 @@ app = FastAPI(
     version=__version__,
     openapi_url=f"{settings.API_PATH}/openapi.json",
     description="A simple banking app that offers end users possibility to create multiple bank accounts with "
-                "multiple cards assigned to them, make internal and external transfers, and take out a loan."
+                "multiple cards assigned to them, make internal and external transfers, take out loans, use payments "
+                "cards and check transaction history."
 )
 
 if settings.CORS_ORIGINS:

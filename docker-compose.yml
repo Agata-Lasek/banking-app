@@ -36,7 +36,6 @@ services:
     env_file:
       - .env
 
-
 volumes:
   postgres-data:
   pgadmin-data:
