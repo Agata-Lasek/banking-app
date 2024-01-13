@@ -5,18 +5,17 @@ from fastapi import (
     Depends,
     Query
 )
+from typing import Annotated
 
 from src.schemas import (
     Account,
     TransferCreate,
     Transaction,
     TransactionParams,
-    Card
+    Card,
+    GenericMultipleItems
 )
-from src.dependencies import (
-    SessionDep,
-    ValidAccountOwnerDep
-)
+from src.dependencies import SessionDep, ValidAccountOwnerDep
 from src.models import AccountType
 from src import crud
 
@@ -70,7 +69,7 @@ def transfer_funds(
 @router.get(
     "/{account_id}/transactions",
     summary="Get bank account transactions",
-    response_model=list[Transaction]
+    response_model=GenericMultipleItems[Transaction]
 )
 def get_account_transactions(
         account_id: int,
@@ -78,24 +77,26 @@ def get_account_transactions(
         *,
         session: SessionDep,
         _: ValidAccountOwnerDep
-) -> list[Transaction]:
-    return crud.transaction.get_account_transactions_by_filter(session, account_id, params)
+) -> GenericMultipleItems[Transaction]:
+    transactions = crud.transaction.get_account_transactions_by_filter(session, account_id, params)
+    return GenericMultipleItems[Transaction](items=[Transaction(**vars(t)) for t in transactions])
 
 
 @router.get(
     "/{account_id}/cards",
     summary="Get bank account cards",
-    response_model=list[Card]
+    response_model=GenericMultipleItems[Card]
 )
 def get_account_cards(
         account_id: int,
-        expired: bool = Query(True, description="List expired cards"),
-        blocked: bool = Query(True, description="List blocked cards"),
+        expired: Annotated[bool, Query(description="List expired cards")] = True,
+        blocked: Annotated[bool, Query(description="List blocked cards")] = True,
         *,
         session: SessionDep,
         _: ValidAccountOwnerDep
-) -> list[Card]:
-    return crud.card.get_account_cards(session, account_id, expired, blocked)
+) -> GenericMultipleItems[Card]:
+    cards = crud.card.get_account_cards(session, account_id, expired, blocked)
+    return GenericMultipleItems[Card](items=[Card(**vars(c)) for c in cards])
 
 
 @router.post(

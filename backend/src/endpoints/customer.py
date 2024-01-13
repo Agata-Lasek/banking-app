@@ -1,22 +1,14 @@
-from fastapi import (
-    APIRouter,
-    HTTPException,
-    status,
-    Query
-)
+from fastapi import APIRouter, HTTPException, status, Query
 
-from src.dependencies import (
-    SessionDep,
-    CurrentCustomerDep,
-    ValidCustomerDep
-)
+from src.dependencies import SessionDep, CurrentCustomerDep, ValidCustomerDep
 from src.schemas import (
     Customer,
     CustomerUpdate,
     Account,
     CustomerCreate,
     AccountCreate,
-    Loan
+    Loan,
+    GenericMultipleItems
 )
 from src import crud
 
@@ -85,10 +77,14 @@ def update_customer(
 @router.get(
     "/{customer_id}/accounts",
     summary="Get customer accounts",
-    response_model=list[Account]
+    response_model=GenericMultipleItems[Account]
 )
-def get_all_customer_accounts(customer: ValidCustomerDep) -> list[Account]:
-    return customer.accounts
+def get_all_customer_accounts(
+        session: SessionDep,
+        customer: ValidCustomerDep
+) -> GenericMultipleItems[Account]:
+    accounts = crud.account.get_customer_accounts(session, customer.id)
+    return GenericMultipleItems[Account](items=[Account(**vars(a)) for a in accounts])
 
 
 @router.post(
@@ -120,13 +116,13 @@ def create_account(
 @router.get(
     "/{customer_id}/loans",
     summary="Get customer loans",
-    response_model=list[Loan]
+    response_model=GenericMultipleItems[Loan]
 )
 def get_all_customer_loans(
         paidoff: bool = Query(False, description="List also paid off loans"),
         *,
         session: SessionDep,
         customer: ValidCustomerDep
-) -> list[Loan]:
+) -> GenericMultipleItems[Loan]:
     loans = crud.loan.get_customer_loans(session, customer.id, paidoff)
-    return loans
+    return GenericMultipleItems[Loan](items=[Loan(**vars(l)) for l in loans])

@@ -21,6 +21,16 @@ def get_transaction_by_id(session: Session, transaction_id: int) -> Optional[Tra
     return session.get(Transaction, transaction_id)
 
 
+TRANSACTIONS_TYPES = {
+    "deposit": TransactionType.DEPOSIT,
+    "withdrawal": TransactionType.WITHDRAWAL,
+    "transferin": TransactionType.TRANSFER_IN,
+    "transferout": TransactionType.TRANSFER_OUT,
+    "loantake": TransactionType.LOAN_TAKE,
+    "loanpayoff": TransactionType.LOAN_PAYOFF
+}
+
+
 def get_account_transactions_by_filter(
         session: Session,
         account_id: int,
@@ -34,11 +44,11 @@ def get_account_transactions_by_filter(
     """
     statement = select(Transaction).where(Transaction.account_id == account_id)
     if params.type is not None:
-        statement = statement.where(Transaction.type == params.type)
-    if params.start is not None:
-        statement = statement.where(Transaction.created_at >= params.start)
-    if params.end is not None:
-        statement = statement.where(Transaction.created_at <= params.end)
+        statement = statement.where(Transaction.type == TRANSACTIONS_TYPES[params.type])
+    if params.start_date is not None:
+        statement = statement.where(Transaction.created_at >= params.start_date)
+    if params.end_date is not None:
+        statement = statement.where(Transaction.created_at <= params.end_date)
 
     statement = (
         statement

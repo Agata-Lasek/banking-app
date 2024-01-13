@@ -18,11 +18,12 @@ def get_account_by_number(session: Session, account_number: str) -> Optional[Acc
 
 
 def get_customer_accounts(session: Session, customer_id: int) -> list[Account]:
-    return list(
-        session.execute(
-            select(Account).where(Account.customer_id == customer_id)
-        ).scalars().all()
+    statement = (
+        select(Account)
+        .where(Account.customer_id == customer_id)
+        .order_by(Account.created_at.asc())
     )
+    return list(session.execute(statement).scalars().all())
 
 
 def create_account(session: Session, account_in: AccountCreate, customer_id: int) -> Account:
