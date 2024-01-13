@@ -1,4 +1,8 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship
+)
 from sqlalchemy import String
 
 from src.core import Base
@@ -13,3 +17,5 @@ class Customer(Base):
     email: Mapped[str] = mapped_column(String(100), unique=True, index=True)
     phone: Mapped[str] = mapped_column(String(100))
     password: Mapped[str]
+    accounts: Mapped[list["Account"]] = relationship(back_populates="customer")
+    loans: Mapped[list["Loan"]] = relationship(back_populates="customer")

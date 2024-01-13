@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "banking-app"
-version = "0.1.0"
+version = "0.7.0"
 description = "Project providing the basic functionalities of a banking system."
 authors = [
   "Agata-Lasek",
@@ -15,10 +15,10 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.104.1"
-uvicorn = {extras = ["standard"], version = "^0.24.0.post1"}
-alembic = "^1.13.0"
-sqlalchemy = "^2.0.23"
+fastapi = "^0.109.0"
+uvicorn = {extras = ["standard"], version = "^0.25.0"}
+alembic = "^1.13.1"
+sqlalchemy = "^2.0.25"
 pydantic-settings = "^2.1.0"
 python-jose = "^3.3.0"
 tenacity = "^8.2.3"
@@ -26,6 +26,8 @@ psycopg2 = "^2.9.9"
 email-validator = "^2.1.0.post1"
 python-multipart = "^0.0.6"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+pydantic-extra-types = "^2.4.1"
+phonenumbers = "^8.13.27"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"

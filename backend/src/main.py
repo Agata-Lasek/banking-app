@@ -3,13 +3,16 @@ from starlette.middleware.cors import CORSMiddleware
 
 from src.core.settings import settings
 from src.endpoints import routers
+from src import __version__
 
-__version__ = "0.1.0"
 
 app = FastAPI(
     title="banking-app",
     version=__version__,
-    openapi_url=f"{settings.API_PATH}/openapi.json"
+    openapi_url=f"{settings.API_PATH}/openapi.json",
+    description="A simple banking app that offers end users possibility to create multiple bank accounts with "
+                "multiple cards assigned to them, make internal and external transfers, take out loans, use payments "
+                "cards and check transaction history."
 )
 
 if settings.CORS_ORIGINS:

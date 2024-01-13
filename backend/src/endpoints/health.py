@@ -15,4 +15,4 @@ router = APIRouter(
     response_model=HealthCheck
 )
 def get_health() -> HealthCheck:
-    return HealthCheck(status="OK")
+    return HealthCheck()

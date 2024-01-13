@@ -1,0 +1,46 @@
+Version 0.1.0:
+    * Add models and migrations using alembic package,
+    * Add basic docker-compose to run postgres and pgadmin,
+    * Add authentication with JWT,
+    * Add health check endpoint,
+    * Add customer endpoints and its CRUD operations.
+
+Version 0.2.0:
+    * Add accounts schemas and endpoints,
+    * Add creation of accounts when creating a customer,
+    * Health check endpoint now returns the API version,
+    * Add "\me" endpoint to easier obtain current customer resources.
+
+Version 0.3.0:
+    * Add transactions schemas and endpoints,
+    * Now there is possibility to create transfer funds between accounts.
+
+Version 0.3.1:
+    * Fix required account number length in body,
+    * Fix internal and external transfer functionality.
+
+Version 0.4.0:
+    * Add endpoints and schemas related to loans,
+    * Add functionality to take and payoff a loan.
+
+Version 0.4.1:
+    * Refactor way of operating with database,
+    * Fix internal server error caused by accessing non-existing loan.
+
+Version 0.5.0:
+    * Add advanced filters for transactions and loans,
+    * Add option to update customer details,
+    * Change some endpoints according to REST API best practices.
+
+Version 0.6.0:
+    * Add card-related functionality,
+    * Add Dockerfile to containerize the application,
+    * Add Dockerfile to containerize the application,
+    * Fix accessing non-existing account when taking a loan,
+    * Add more dependencies to simplify code.
+
+Version 0.7.0:
+    * List responses are more user-friendly,
+    * Transactions are filtered with usage of literals instead of enum values,
+    * Add validation of phone number when creating a customer,
+    * Add password validation when creating a customer.
