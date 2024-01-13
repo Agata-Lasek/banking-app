@@ -69,7 +69,7 @@ def transfer_funds(
 @router.get(
     "/{account_id}/transactions",
     summary="Get bank account transactions",
-    response_model=GenericMultipleItems[list[Transaction]]
+    response_model=GenericMultipleItems[Transaction]
 )
 def get_account_transactions(
         account_id: int,
@@ -77,9 +77,9 @@ def get_account_transactions(
         *,
         session: SessionDep,
         _: ValidAccountOwnerDep
-) -> GenericMultipleItems[list[Transaction]]:
+) -> GenericMultipleItems[Transaction]:
     transactions = crud.transaction.get_account_transactions_by_filter(session, account_id, params)
-    return GenericMultipleItems[list[Transaction]](items=[Transaction(**vars(t)) for t in transactions])
+    return GenericMultipleItems[Transaction](items=[Transaction(**vars(t)) for t in transactions])
 
 
 @router.get(
@@ -94,9 +94,9 @@ def get_account_cards(
         *,
         session: SessionDep,
         _: ValidAccountOwnerDep
-) -> GenericMultipleItems[list[Card]]:
+) -> GenericMultipleItems[Card]:
     cards = crud.card.get_account_cards(session, account_id, expired, blocked)
-    return GenericMultipleItems[list[Card]](items=[Card(**vars(c)) for c in cards])
+    return GenericMultipleItems[Card](items=[Card(**vars(c)) for c in cards])
 
 
 @router.post(
