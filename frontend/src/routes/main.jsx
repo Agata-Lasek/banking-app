@@ -6,6 +6,7 @@ import Login from "../components/auth/Login"
 import Signup from "../components/auth/Signup"
 import Logout from "../components/auth/Logout"
 import Dashboard from "../components/Dashboard"
+import Accounts from "../components/Accounts"
 import NotFound from "../components/NotFound"
 
 
@@ -43,6 +44,10 @@ const Routes = () => {
                 {
                     path: "/dashboard",
                     element: <Dashboard />
+                },
+                {
+                    path: "/accounts",
+                    element: <Accounts />
                 }
             ]
         }
