@@ -44,3 +44,7 @@ Version 0.7.0:
     * Transactions are filtered with usage of literals instead of enum values,
     * Add validation of phone number when creating a customer,
     * Add password validation when creating a customer.
+
+Version 0.8.0:
+    * Fix closing session after each request,
+    * Add "/me/transactions" endpoint to list transactions of current customer.

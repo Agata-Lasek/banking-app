@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, Select
 from decimal import Decimal
 from sqlalchemy.sql.expression import select
 from typing import Optional
@@ -31,18 +31,17 @@ TRANSACTIONS_TYPES = {
 }
 
 
-def get_account_transactions_by_filter(
+def get_filtered_transactions(
         session: Session,
-        account_id: int,
+        statement: Select,
         params: TransactionParams
 ) -> list[Transaction]:
     """
-    Get a list of transactions for a given account and params with pagination.
+    Get a list of transactions for init statement.
 
     Returns:
         List of transactions ordered by creation date in descending order.
     """
-    statement = select(Transaction).where(Transaction.account_id == account_id)
     if params.type is not None:
         statement = statement.where(Transaction.type == TRANSACTIONS_TYPES[params.type])
     if params.start_date is not None:
@@ -57,6 +56,40 @@ def get_account_transactions_by_filter(
         .order_by(Transaction.created_at.desc())
     )
     return list(session.execute(statement).scalars().all())
+
+
+def get_account_transactions_by_filter(
+        session: Session,
+        account_id: int,
+        params: TransactionParams
+) -> list[Transaction]:
+    """
+    Get a list of transactions for a given account and params with pagination.
+
+    Returns:
+        List of transactions ordered by creation date in descending order.
+    """
+    statement = select(Transaction).where(Transaction.account_id == account_id)
+    return get_filtered_transactions(session, statement, params)
+
+
+def get_customer_transactions_by_filter(
+        session: Session,
+        customer_id: int,
+        params: TransactionParams
+) -> list[Transaction]:
+    """
+    Get a list of transactions for a given customer and params with pagination.
+
+    Returns:
+        List of transactions ordered by creation date in descending order.
+    """
+    statement = (
+        select(Transaction)
+        .join(Account)
+        .where(Account.customer_id == customer_id)
+    )
+    return get_filtered_transactions(session, statement, params)
 
 
 def get_account_transactions(

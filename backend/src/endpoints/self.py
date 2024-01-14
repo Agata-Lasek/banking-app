@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
 
 from src.dependencies import SessionDep, CurrentCustomerDep
 from src.schemas import (
@@ -6,6 +6,8 @@ from src.schemas import (
     CustomerUpdate,
     Loan,
     Account,
+    Transaction,
+    TransactionParams,
     GenericMultipleItems
 )
 from src import crud
@@ -55,6 +57,21 @@ def get_current_customer_accounts(
 ) -> GenericMultipleItems[Account]:
     accounts = crud.account.get_customer_accounts(session, customer.id)
     return GenericMultipleItems[Account](items=[Account(**vars(a)) for a in accounts])
+
+
+@router.get(
+    "/transactions",
+    summary="Get current customer transactions",
+    response_model=GenericMultipleItems[Transaction]
+)
+def get_current_customer_transactions(
+        params: TransactionParams = Depends(),
+        *,
+        session: SessionDep,
+        customer: CurrentCustomerDep
+) -> GenericMultipleItems[Transaction]:
+    transactions = crud.transaction.get_customer_transactions_by_filter(session, customer.id, params)
+    return GenericMultipleItems[Transaction](items=[Transaction(**vars(t)) for t in transactions])
 
 
 @router.get(
