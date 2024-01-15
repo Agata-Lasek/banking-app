@@ -9,4 +9,8 @@ const formatToIBAN = (accountNumber) => {
     return `${firstTwoDigits} ${accountNumber.slice(2).replace(/(.{4})/g, '$1 ').trim()}`
 }
 
-export { maskAccountNumber, formatToIBAN }
+const findRelatedAccount = (transaction, accounts) => {
+    return accounts.find((account) => account.id === transaction.accountId)
+}
+
+export { maskAccountNumber, formatToIBAN, findRelatedAccount }
