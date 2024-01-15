@@ -9,6 +9,7 @@ import Dashboard from "../components/Dashboard"
 import Accounts from "../components/Accounts"
 import Cards from "../components/Cards"
 import Transactions from "../components/Transactions"
+import Transfer from "../components/Transfer"
 import Loans from "../components/Loans"
 import NotFound from "../components/NotFound"
 
@@ -59,6 +60,10 @@ const Routes = () => {
                 {
                     path: "/transactions",
                     element: <Transactions />
+                },
+                {
+                    path: "/transfer",
+                    element: <Transfer />
                 },
                 {
                     path: "/loans",

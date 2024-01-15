@@ -1,6 +1,5 @@
 import { maskAccountNumber, findRelatedAccount } from "../utils/accounts"
 
-
 const TransactionTableRow = ({ transaction, accounts }) => {
     if (!transaction) return ""
     const account  = findRelatedAccount(transaction, accounts)
