@@ -7,6 +7,9 @@ import Signup from "../components/auth/Signup"
 import Logout from "../components/auth/Logout"
 import Dashboard from "../components/Dashboard"
 import Accounts from "../components/Accounts"
+import Cards from "../components/Cards"
+import Transactions from "../components/Transactions"
+import Loans from "../components/Loans"
 import NotFound from "../components/NotFound"
 
 
@@ -48,6 +51,18 @@ const Routes = () => {
                 {
                     path: "/accounts",
                     element: <Accounts />
+                },
+                {
+                    path: "/cards",
+                    element: <Cards />
+                },
+                {
+                    path: "/transactions",
+                    element: <Transactions />
+                },
+                {
+                    path: "/loans",
+                    element: <Loans />
                 }
             ]
         }

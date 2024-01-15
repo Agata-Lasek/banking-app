@@ -2,13 +2,8 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import client from "../api/axios"
 import Sidebar from "./Sidebar"
+import { maskAccountNumber } from "../utils/accounts"
 
-
-const formatAccountNumber = (accountNumber) => {
-    const firstTwoDigits = accountNumber.slice(0, 2)
-    const lastEightDigits = accountNumber.slice(-8).replace(/(\d{4})(\d{4})/, "$1 $2")
-    return `${firstTwoDigits} (...) ${lastEightDigits}`
-}
 
 const findRelatedAccount = (transaction, accounts) => {
     return accounts.find((account) => account.id === transaction.accountId)
@@ -20,7 +15,7 @@ const AccountListElement = ({ account }) => {
             <div className="flex items-center">
                 <div className="flex-1 min-w-0 ms-4">
                     <p className="text-sm font-medium truncate text-white">
-                        {formatAccountNumber(account.number)}
+                        {maskAccountNumber(account.number)}
                     </p>
                     <p className="text-sm truncate text-gray-400">
                         {account.type}
@@ -35,27 +30,31 @@ const AccountListElement = ({ account }) => {
 }
 
 const TransactionTableRow = ({ transaction, accounts }) => {
+    if (!transaction) return ""
     const account  = findRelatedAccount(transaction, accounts)
+    const amount = transaction.balanceAfter - transaction.balanceBefore
+    const date = new Date(transaction.createdAt)
+    const shortDescription = transaction.description.length > 50 ? `${transaction.description.substring(0, 50).trim()}...` : transaction.description;
 
-    return transaction ? (
-        <tr class="border-b bg-gray-800 border-gray-700">
-            <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
-                {transaction.createdAt}
+    return (
+        <tr className="border-b bg-gray-800 border-gray-700">
+            <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">
+                {date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
             </th>
-            <td class="px-6 py-4">
-                {transaction.description}
+            <td className="px-6 py-4">
+                {shortDescription}
             </td>
-            <td class="px-6 py-4">
-                {transaction.balanceAfter - transaction.balanceBefore} {transaction.currency}
+            <td className="px-6 py-4">
+                {amount > 0 ? `+${amount}` : amount} {account ? account.currency : ""}
             </td>
-            <td class="px-6 py-4">
-                {account ? formatAccountNumber(account.number) : ""}
+            <td className="px-6 py-4">
+                {account ? maskAccountNumber(account.number) : ""}
             </td>
-            <td class="px-6 py-4">
+            <td className="px-6 py-4">
                 {transaction.type}
             </td>
         </tr>
-    ) : ""
+    )
 }
 
 const Dashboard = () => {
@@ -137,24 +136,24 @@ const Dashboard = () => {
                     </div>
                     <div className="overflow-x-auto border border-gray-700 rounded-lg w-full">
                         <table className="w-full text-sm text-left text-gray-400">
-                            <caption class="p-5 text-lg font-semibold text-left text-white bg-gray-800">
+                            <caption className="p-5 text-lg font-semibold text-left text-white bg-gray-800">
                                 Recent transactions
                             </caption>
-                            <thead class="text-xs uppercase bg-gray-700 text-gray-400">
+                            <thead className="text-xs uppercase bg-gray-700 text-gray-400">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         Date
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         Short description
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         Amount
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         Account number
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         Type
                                     </th>
                                 </tr>

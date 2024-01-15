@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../../provider/authProvider"
 import client from "../../api/axios"
-import handleAPIError from "../../api/handleError"
+import { handleError } from "../../utils/api"
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -29,7 +29,7 @@ const Login = () => {
             setToken(response.data.access_token)
             navigate("/dashboard", { replace: true })
         } catch (error) {
-            setError(handleAPIError(error))
+            setError(handleError(error))
         }
 
     }
