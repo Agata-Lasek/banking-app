@@ -4,11 +4,13 @@ from sqlalchemy.sql.expression import select
 from typing import Optional
 import requests
 from requests.exceptions import HTTPError
+from enum import Enum
 
 from src.models import (
     Transaction,
     TransactionType,
-    Account
+    Account,
+    Currency
 )
 
 
@@ -101,18 +103,18 @@ def handle_internal_transfer(
     
     
     # TODO: Implement currency conversion
-    if sender.currency == 'PLN':
-        if receiver.currency != 'PLN':
+    if sender.currency == Currency.PLN:
+        if receiver.currency != Currency.PLN:
             exchange_rate = get_exchange_rate(receiver.currency)
             amount = Decimal(amount) / exchange_rate
         else:
             amount = Decimal(amount)
             
-    elif sender.currency != 'PLN':
-        if receiver.currency == 'PLN':
+    elif sender.currency != Currency.PLN:
+        if receiver.currency == Currency.PLN:
             exchange_rate2 = get_exchange_rate(sender.currency)
             amount = Decimal(amount) * exchange_rate2
-        elif receiver.currency != 'PLN':
+        elif receiver.currency != Currency.PLN:
             exchange_rate2 = get_exchange_rate(sender.currency)
             amount = Decimal(amount) * exchange_rate2
             exchange_rate = get_exchange_rate(receiver.currency)
