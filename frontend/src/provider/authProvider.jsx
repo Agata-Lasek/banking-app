@@ -16,6 +16,7 @@ const authReducer = (state, action) => {
             return { ...state, token: action.payload }
         case ACTIONS.clearToken:
             delete client.defaults.headers.common["Authorization"]
+            localStorage.removeItem("token")
             return { ...state, token: null }
         default:
             console.error(`Invalid action type ${action.type}`)
