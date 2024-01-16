@@ -13,4 +13,17 @@ const findRelatedAccount = (transaction, accounts) => {
     return accounts.find((account) => account.id === transaction.accountId)
 }
 
-export { maskAccountNumber, formatToIBAN, findRelatedAccount }
+const AccountType = {
+    CHECKING: "Checking",
+    SAVING: "Saving",
+    FOREIGN_CURRENCY: "Foreign currency"
+}
+
+const CurrencyType = {
+    PLN: "PLN",
+    USD: "USD",
+    EUR: "EUR",
+    GBP: "GBP",
+};
+
+export { maskAccountNumber, formatToIBAN, findRelatedAccount, AccountType, CurrencyType }

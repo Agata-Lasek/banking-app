@@ -83,7 +83,7 @@ const Dashboard = () => {
                     <div className="w-2/5 p-6 border bg-gray-800 border-gray-700 rounded-lg">
                         <h2 className="mb-2 text-3xl text-white font-bold py-4">Welcome back, <br />{user.name}! 👋</h2>
                         <p className="mb-3 font-normal text-gray-400">Everything seems to be fine with your account since your last visit. However, wouldn't you perhaps like to take out a loan to realize your dreams?</p>
-                        <Link to="/loans" className="inline-flex items-center px-3 py-2 rounded-lg text-sm bg-blue-600 font-medium text-center text-white rounder-lg hover:bg-blue-700 focus:ring-blue-800 focus:outline-none">
+                        <Link to="/loans/take" className="inline-flex items-center px-3 py-2 rounded-lg text-sm bg-blue-600 font-medium text-center text-white rounder-lg hover:bg-blue-700 focus:ring-blue-800 focus:outline-none">
                             It all starts with you
                             <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>

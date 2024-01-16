@@ -1,5 +1,4 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
-import { useAuth } from "../provider/authProvider"
 import ProtectedRoute from "./ProtectedRoute"
 import RedirectAuthenticatedRoute from "./RedirectAuthenticatedRoute"
 import Login from "../components/auth/Login"
@@ -11,6 +10,7 @@ import Cards from "../components/Cards"
 import Transactions from "../components/Transactions"
 import Transfer from "../components/Transfer"
 import Loans from "../components/Loans"
+import LoanTake from "../components/LoanTake"
 import NotFound from "../components/NotFound"
 
 
@@ -67,7 +67,11 @@ const Routes = () => {
                 },
                 {
                     path: "/loans",
-                    element: <Loans />
+                    element: <Loans />,
+                },
+                {
+                    path: "/loans/take",
+                    element: <LoanTake />,
                 }
             ]
         }

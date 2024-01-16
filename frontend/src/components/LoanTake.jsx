@@ -1,10 +1,45 @@
 import { useState, useEffect } from "react"
 import client from "../api/axios"
 import Sidebar from "./Sidebar"
-import { maskAccountNumber } from "../utils/accounts"
+import { maskAccountNumber, AccountType } from "../utils/accounts"
 import { handleError } from "../utils/api"
 
-const Transfer = () => {
+
+const loanOptions = [
+    {
+        title: "RapidRise Express Loan",
+        description: "Elevate your financial journey with RapidRise Express.",
+        amount: 2500,
+    },
+    {
+        title: "SwiftStream Advance",
+        description: "Flow smoothly through financial challenges with SwiftStream.",
+        amount: 5000,
+    },
+    {
+        title: "ZenithEase Loan Solution",
+        description: "Attain financial zenith with our ZenithEase Loan Solution.",
+        amount: 10000,
+    },
+    {
+        title: "LuminaLend QuickPath",
+        description: "Light up your financial path with LuminaLend QuickPath.",
+        amount: 15000,
+    },
+    {
+        title: "VivaVelocity Funding",
+        description: "Embrace the vibrant speed of financial growth with VivaVelocity.",
+        amount: 25000,
+    },
+    {
+        title: "ReadyRocket LaunchLoan",
+        description: "Blast off into financial freedom with ReadyRocket LaunchLoan.",
+        amount: 50000,
+    },
+]
+
+
+const LoanTake = () => {
     const [error, setError] = useState("")
     const [success, setSuccess] = useState(false)
     const [user, setUser] = useState({
@@ -13,10 +48,8 @@ const Transfer = () => {
     })
     const [accounts, setAccounts] = useState([])
     const [formData, setFormData] = useState({
-        id: "",
-        amount: "",
-        receiver: "",
-        description: ""
+        account: "",
+        amount: ""
     })
 
     const getAccounts = async() => {
@@ -40,30 +73,16 @@ const Transfer = () => {
         }
     }
 
-    const handleChange = (e) => {
-        const value = e.target.value;
-        setFormData({
-            ...formData,
-            [e.target.name]: value
-        })
-    }
-
     const handleSubmit = async(e) => {
         e.preventDefault()
         setError("")
         setSuccess(false)
         
-        if (!formData.receiver) { setError("You need to provide receiver's account number"); return }
-        if (formData.receiver.replace(/\s/g, "").length !== 26) { setError("Invalid receiver's account number"); return }
-        if (!formData.amount) { setError("You need to provide amount"); return }
-        if (formData.amount <= 0) { setError("Invalid amount"); return }
-        if (!formData.description) { setError("You need to provide description"); return }
-        if (!formData.id) { setError("You need to select an account"); return }
+        if (!formData.amount) { setError("You need to select a loan option"); return }
+        if (!formData.account) { setError("You need to select an account"); return }
 
         try {
-            let { id, ...body } = formData
-            body.receiver = body.receiver.replace(/\s/g, "")
-            const response = await client.post(`/accounts/${formData.id}/transfer`, body)
+            const response = await client.post("/loans", formData)
             setSuccess(response.status >= 200 && response.status < 300)
         } catch (error) {
             setError(handleError(error))
@@ -85,33 +104,33 @@ const Transfer = () => {
             <Sidebar user={user} />
             <div className="p-4 ml-64 my-5">
                 <div className="w-full mx-auto max-w-5xl items-center flex flex-col space-y-3">
-                    <h1 className="text-white text-3xl font-bold py-4">Transfer money</h1>
+                    <h1 className="text-white text-3xl font-bold py-4">Take out loan</h1>
                     <form onSubmit={handleSubmit} className="mx-auto flex flex-col space-y-4 w-1/2">
                         <div>
-                            <label htmlFor="receiver" className="block mb-2 text-sm font-medium text-white">Recipient's account number</label>
-                            <input type="text" id="receiver" name="receiver" value={formData.receiver} onChange={handleChange} className="bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400 text-white" placeholder="98 1019 1404 5284 6939 4502 3049"/>
-                        </div>
-                        <div>
-                            <label htmlFor="amount" className="mb-2 text-sm font-medium sr-only text-white">Amount</label>
-                            <div className="relative w-full">
-                                <div className="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
-                                    <svg className="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 2a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1M2 5h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm8 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
-                                    </svg>
-                                </div>
-                                <input type="number" id="amount" name="amount" value={formData.amount} onChange={handleChange} className="block px-4 py-3 w-full font-medium z-20 ps-10 text-sm rounded-lg border focus:ring-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:border-blue-500" placeholder="Enter amount"/>
-                            </div>
-                        </div>
-                        <div>
-                            <label htmlFor="description" className="block mb-2 text-sm font-medium text-white">Description</label>
-                            <input type="text" id="description" name="description" value={formData.description} onChange={handleChange} className="bg-gray-700 border border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400 text-white" placeholder="Funds transfer"/>
-                        </div>
-                        <div>
-                            <p className="block mb-2 text-sm font-medium text-white">Transfer from</p>
+                            <p className="block mb-2 text-sm font-medium text-white">Select the desired loan option</p>
                             <ul>
-                                {accounts.map((account, index) => account && (
+                                {loanOptions.map((loan, index) => (
                                     <li key={index} className="pb-3">
-                                        <input type="radio" id={`account-${index}`} name="account-id" onChange={() => setFormData({...formData, id: account.id})} className="hidden peer"/>
+                                        <input type="radio" id={`loan-${index}`} name="loan-id" onChange={() => setFormData({...formData, amount: loan.amount})} className="hidden peer"/>
+                                        <label htmlFor={`loan-${index}`} className="flex items-center p-5 hover:bg-gray-700 bg-gray-800 peer-checked:border-blue-600 border-gray-700 cursor-pointer rounded-lg border">
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-lg font-semibold text-white">{loan.title}</p>
+                                                <p className="text-sm text-gray-400">{loan.description}</p>
+                                            </div>
+                                            <div className="inline-flex items-center text-base font-semibold text-white">
+                                                {loan.amount} PLN
+                                            </div>
+                                        </label>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div>
+                            <p className="block mb-2 text-sm font-medium text-white">Transfer funds to</p>
+                            <ul>
+                                {accounts.map((account, index) => account && account.type === AccountType.CHECKING && (
+                                    <li key={index} className="pb-3">
+                                        <input type="radio" id={`account-${index}`} name="account-id" onChange={() => setFormData({...formData, account: account.number})} className="hidden peer"/>
                                         <label htmlFor={`account-${index}`} className="flex items-center p-5 hover:bg-gray-700 bg-gray-800 peer-checked:border-blue-600 border-gray-700 cursor-pointer rounded-lg border">
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-lg font-semibold text-white">{maskAccountNumber(account.number)}</p>
@@ -138,10 +157,10 @@ const Transfer = () => {
                                 <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                                 </svg>
-                                <span className="font-medium">Successfully transfered money!</span>
+                                <span className="font-medium">Successfully took out loan!</span>
                             </div>
                         }
-                        <button type="submit" className="text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full bg-primary-600 hover:bg-primary-700 focus:ring-primary-800 focus:outline-none">Transfer</button>
+                        <button type="submit" className="text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full bg-primary-600 hover:bg-primary-700 focus:ring-primary-800 focus:outline-none">Take out</button>
                     </form>
                 </div>
             </div>
@@ -149,4 +168,4 @@ const Transfer = () => {
     )
 }
 
-export default Transfer
+export default LoanTake
