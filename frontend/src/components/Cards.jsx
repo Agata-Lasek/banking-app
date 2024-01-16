@@ -28,8 +28,9 @@ const Cards = () => {
          <>
             <Sidebar user={user} />
             <div className="p-4 ml-64 my-5">
-                <div className="w-full mx-auto max-w-5xl justify-between flex flex-wrap space-y-3">
+                <div className="w-full mx-auto max-w-5xl items-center justify-center flex flex-wrap space-y-3">
                     <h1 className="text-white w-screen text-3xl font-bold py-4">Cards</h1>
+                    <h2 className="text-white text-2xl py-4">Not implemented yet ;(</h2>
                 </div>
             </div>
          </>
