@@ -4,24 +4,6 @@ import client from "../api/axios"
 import Sidebar from "./Sidebar"
 import { maskAccountNumber, formatToIBAN } from "../utils/accounts"
 
-const AccountTypes = {
-    CHECKING: "Checking",
-    SAVING: "Saving",
-    FOREIGN_CURRENCY: "Foreign currency"
-}
-
-const CurrencyTypes = {
-    PLN: "PLN",
-    USD: "USD",
-    EUR: "EUR",
-    GBP: "GBP",
-};
-
-const shouldDisplayCurrency = (accountType, currency) => {
-    const isForeignAccount = accountType === AccountTypes.FOREIGN_CURRENCY
-    return isForeignAccount ? currency !== CurrencyTypes.PLN : currency === CurrencyTypes.PLN
-}
-
 const AccountTableElement = ({ account }) => {
     const [show, setShow] = useState(false)
 
@@ -37,7 +19,7 @@ const AccountTableElement = ({ account }) => {
                 {account.balance} {account.currency}
             </td>
             <td className="px-6 py-4 text-right">
-                <button onClick={() => setShow(!show)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">{ !show ? "Show account numbe" : "Hide account number"}</button>
+                <button onClick={() => setShow(!show)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">{ !show ? "Show account number" : "Hide account number"}</button>
             </td>
         </tr>
     ): ""
@@ -45,34 +27,10 @@ const AccountTableElement = ({ account }) => {
 
 const Accounts = () => {
     const [user, setUser] = useState({
-        id: 0,
         name: "",
         surname: ""
     })
     const [accounts, setAccounts] = useState([])
-    const [formData, setFormData] = useState({
-        type: AccountTypes.CHECKING,
-        currency: CurrencyTypes.PLN
-    })
-    const [newAccount, setNewAccount] = useState(0)
-
-    const handleChange = (e) => {
-        const value = e.target.value
-        setFormData({
-            ...formData,
-            [e.target.name]: value
-        })
-    }
-
-    const handleAccountCreation = async(e) => {
-        e.preventDefault();
-        try {
-            const response = await client.post(`/customers/${user.id}/accounts`, formData)
-            setNewAccount(prevCount => prevCount + 1)
-        } catch(error) {
-            console.log(error?.response.status)
-        }
-    }
 
     const getUser = async() => {
         try {
@@ -101,7 +59,7 @@ const Accounts = () => {
             await Promise.all([getUser(), getAccounts()]);
         };
         fetchData();
-    }, [newAccount])
+    }, [])
 
     return (
          <>
@@ -110,11 +68,11 @@ const Accounts = () => {
                 <div className="w-full mx-auto max-w-5xl justify-between flex flex-wrap space-y-3">
                     <h1 className="text-white w-screen text-3xl font-bold py-4">Accounts</h1>
                     <div className="overflow-x-auto border border-gray-700 rounded-lg w-full">
+                        <div className="bg-gray-800">
+                            <h2 className="px-5 pt-5 text-lg font-semibold text-left text-white">Already owned accounts</h2>                          
+                            <p className="px-5 pb-5 mt-1 text-sm font-normal text-gray-400">Remember that you can have a maximum of 5 different bank accounts of any type. If you want to close a particular account, contact a bank employee.</p>
+                        </div>
                         <table className="w-full text-sm text-left text-gray-400">
-                            <caption className="p-5 text-lg font-semibold text-left text-white bg-gray-800">
-                                Already owning accounts
-                                <p className="mt-1 text-sm font-normal text-gray-400">Remember that you can have a maximum of 5 different bank accounts of any type. If you want to close a particular account, contact a bank employee.</p>
-                            </caption>
                             <thead className="text-xs uppercase bg-gray-700 text-gray-400">
                                 <tr>
                                     <th scope="col" className="px-6 py-3">
@@ -135,28 +93,10 @@ const Accounts = () => {
                                 {accounts.map((account, index) => <AccountTableElement account={account} key={index} />)}
                             </tbody>
                         </table>
+                        <div className="flex items-center justify-end p-4 bg-gray-800">
+                            <Link to="/accounts/open" className="inline-flex items-center justify-center px-3 h-8 text-sm font-medium border rounded bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white">Open new account</Link>
+                        </div>
                     </div>
-                    <h1 className="text-white w-screen text-3xl font-bold py-4">Open new bank account</h1>
-                    <form className="w-full space-y-4" onSubmit={handleAccountCreation}>
-                        <div>
-                            <label className="mb-2 text-base font-medium text-white">What type of bank account would you like to open?</label>
-                            <select onChange={handleChange} id="type" name="type" className="w-full px-4 py-3 text-base border rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                                {Object.values(AccountTypes).map((accountType) => (
-                                    <option value={accountType} key={accountType} >{accountType}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                        <label className="mb-2 text-base font-medium text-white">Select bank account currency</label>
-                            <select onChange={handleChange} id="currency" name="currency" className="w-full px-4 py-3 text-base border rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                                {Object.values(CurrencyTypes).map((currencyType) => (
-                                    (shouldDisplayCurrency(formData.type, currencyType)) && 
-                                    <option value={currencyType} key={currencyType} >{currencyType}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <button type="submit" className="text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full bg-primary-600 hover:bg-primary-700 focus:ring-primary-800 focus:outline-none">Open account</button>
-                    </form>
                 </div>
             </div>
          </>
