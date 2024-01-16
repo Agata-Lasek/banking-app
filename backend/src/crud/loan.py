@@ -16,12 +16,15 @@ def get_loan_by_id(session: Session, loan_id: int) -> Optional[Loan]:
     return session.get(Loan, loan_id)
 
 
-def get_customer_loans(session: Session, customer_id: int) -> list[Loan]:
-    return list(
-        session.execute(
-            select(Loan).where(Loan.customer_id == customer_id)
-        ).scalars().all()
+def get_customer_loans(session: Session, customer_id: int, paidoff: bool) -> list[Loan]:
+    statement = (
+        select(Loan)
+        .where(Loan.customer_id == customer_id)
+        .order_by(Loan.created_at.desc())
     )
+    if not paidoff:
+        statement = statement.where(Loan.paid_at.is_(None))
+    return list(session.execute(statement).scalars().all())
 
 
 def create_loan(
@@ -34,6 +37,8 @@ def create_loan(
         amount=amount
     )
     session.add(loan)
+    session.flush()
+    session.refresh(loan)
     return loan
 
 
@@ -48,6 +53,7 @@ def handle_take_loan(session: Session, account: Account, amount: float) -> Loan:
         "Funds transfer related to the taken loan", TransactionType.LOAN_TAKE
     )
     account.balance = account.balance + Decimal(amount)
+    session.flush()
     return loan
 
 
@@ -63,4 +69,6 @@ def handle_payoff_loan(session: Session, loan: Loan, account: Account) -> Loan:
     )
     account.balance = account.balance - Decimal(loan.amount)
     loan.paid_at = datetime.now(tz=timezone.utc)
+    session.flush()
+    session.refresh(loan)
     return loan

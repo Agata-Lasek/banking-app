@@ -1,8 +1,4 @@
-from pydantic import (
-    BaseModel,
-    Field,
-    field_validator
-)
+from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
 from typing import Optional
 
@@ -21,7 +17,7 @@ class LoanTake(LoanBase):
     )
 
     @field_validator("amount", mode="after")
-    def validate_amount(cls, v):
+    def validate_amount(cls, v: int) -> int:
         if v % 500 != 0:
             raise ValueError("Amount must be multiple of 500")
         return v

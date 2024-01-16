@@ -1,14 +1,12 @@
-from fastapi import (
-    APIRouter,
-    HTTPException,
-    status
-)
+from fastapi import APIRouter, Query
 
 from src.dependencies import SessionDep, CurrentCustomerDep
 from src.schemas import (
     Customer,
+    CustomerUpdate,
+    Loan,
     Account,
-    Loan
+    GenericMultipleItems
 )
 from src import crud
 
@@ -20,38 +18,55 @@ router = APIRouter(
 
 @router.get(
     "",
-    summary="Get the current customer details",
+    summary="Get current customer details",
     response_model=Customer
 )
 def get_current_customer(
         *,
-        session: SessionDep,
         customer: CurrentCustomerDep
 ) -> Customer:
     return customer
 
 
-@router.get(
-    "/accounts",
-    summary="Get all current customer accounts",
-    response_model=list[Account]
+@router.put(
+    "",
+    summary="Update current customer details",
+    response_model=Customer
 )
-def get_current_customer_accounts(
+def update_current_customer(
         *,
+        customer_in: CustomerUpdate,
         session: SessionDep,
         customer: CurrentCustomerDep
-) -> list[Account]:
-    return crud.account.get_customer_accounts(session, customer.id)
+) -> Customer:
+    customer = crud.customer.update_customer(session, customer, customer_in)
+    session.commit()
+    return customer
+
+
+@router.get(
+    "/accounts",
+    summary="Get current customer accounts",
+    response_model=GenericMultipleItems[Account]
+)
+def get_current_customer_accounts(
+        session: SessionDep,
+        customer: CurrentCustomerDep
+) -> GenericMultipleItems[Account]:
+    accounts = crud.account.get_customer_accounts(session, customer.id)
+    return GenericMultipleItems[Account](items=[Account(**vars(a)) for a in accounts])
 
 
 @router.get(
     "/loans",
-    summary="Get all current customer loans",
-    response_model=list[Loan]
+    summary="Get current customer loans",
+    response_model=GenericMultipleItems[Loan]
 )
 def get_current_customer_loans(
+        paidoff: bool = Query(False, description="List also paid off loans"),
         *,
         session: SessionDep,
         customer: CurrentCustomerDep
-) -> list[Loan]:
-    return crud.loan.get_customer_loans(session, customer.id)
+) -> GenericMultipleItems[Loan]:
+    loans = crud.loan.get_customer_loans(session, customer.id, paidoff)
+    return GenericMultipleItems[Loan](items=[Loan(**vars(l)) for l in loans])

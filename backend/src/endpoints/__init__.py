@@ -4,8 +4,8 @@ from src.endpoints import (
     health,
     account,
     self,
-    transaction,
-    loan
+    loan,
+    card
 )
 
 routers = [
@@ -14,11 +14,8 @@ routers = [
     customer.router,
     self.router,
     account.router,
-    transaction.router,
-    loan.router
+    loan.router,
+    card.router
 ]
 
-__all__ = [
-    "routers"
-]
-
+__all__ = ["routers"]

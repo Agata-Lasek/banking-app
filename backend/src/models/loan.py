@@ -1,4 +1,8 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship
+)
 from sqlalchemy import (
     ForeignKey,
     Numeric,
@@ -15,6 +19,7 @@ class Loan(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     customer_id: Mapped[int] = mapped_column(ForeignKey("customers.id"))
+    customer: Mapped["Customer"] = relationship(back_populates="loans")
     amount: Mapped[float] = mapped_column(Numeric(12, 2))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now())
     paid_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)

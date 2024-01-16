@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  backend:
+    command: ["-d"]
+    volumes:
+        - ./backend/src:/code/backend/src
+        - ./backend/alembic:/code/backend/alembic

@@ -1,8 +1,5 @@
-from pydantic import (
-    BaseModel,
-    model_validator,
-    Field
-)
+from pydantic import BaseModel, model_validator, Field
+from decimal import Decimal
 
 from src.models import AccountType, Currency
 
@@ -29,6 +26,12 @@ class AccountCreate(AccountBase):
         if self.type == AccountType.FOREIGN_CURRENCY and self.currency == Currency.PLN:
             raise ValueError("Foreign currency account must be in foreign currency")
         return self
+
+
+class TransferCreate(BaseModel):
+    amount: Decimal = Field(..., gt=0)
+    receiver: str = Field(..., min_length=26, max_length=26)
+    description: str = Field(default="Funds transfer", max_length=255)
 
 
 class AccountInDB(AccountBase):
