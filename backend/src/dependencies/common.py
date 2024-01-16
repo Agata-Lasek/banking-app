@@ -31,6 +31,8 @@ def get_db() -> Generator:
     except SQLAlchemyError as exc:
         session.rollback()
         raise exc
+    finally:
+        session.close()
 
 
 SessionDep = Annotated[Session, Depends(get_db)]

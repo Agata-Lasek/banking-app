@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import client from "../../api/axios"
-import handleAPIError from "../../api/handleError"
+import { handleError } from "../../utils/api"
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -26,9 +26,9 @@ const Signup = () => {
     const handleSignup = async() => {
         try {
             const response = await client.post("/customers", formData)
-            setSuccess(true)
+            setSuccess(response.status >= 200 && response.status < 300)
         } catch(error) {
-            setError(handleAPIError(error))
+            setError(handleError(error))
         }
     }
 

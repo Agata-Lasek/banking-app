@@ -1,4 +1,4 @@
-const handleAPIError = (error) => {
+export const handleError = (error) => {
     if (error.response) {
         switch (error.response.status) {
             case 400:
@@ -11,5 +11,3 @@ const handleAPIError = (error) => {
     }
     return error.request ? "No response from server, please contact support" : "Something went wrong, please contact support"
 }
-
-export default handleAPIError
