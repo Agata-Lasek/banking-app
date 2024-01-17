@@ -4,6 +4,7 @@ import RedirectAuthenticatedRoute from "./RedirectAuthenticatedRoute"
 import Login from "../components/auth/Login"
 import Signup from "../components/auth/Signup"
 import Logout from "../components/auth/Logout"
+import Customer from "../components/Customer"
 import Dashboard from "../components/Dashboard"
 import Accounts from "../components/Accounts"
 import AccountOpen from "../components/AccountOpen"
@@ -43,6 +44,10 @@ const Routes = () => {
             path: "/",
             element: <ProtectedRoute />,
             children: [
+                {
+                    path: "/me",
+                    element: <Customer />
+                },
                 {
                     path: "/logout",
                     element: <Logout />
