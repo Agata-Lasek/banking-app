@@ -12,6 +12,7 @@ import Transactions from "../components/Transactions"
 import Transfer from "../components/Transfer"
 import Loans from "../components/Loans"
 import LoanTake from "../components/LoanTake"
+import LoanPayoff from "../components/LoanPayoff"
 import NotFound from "../components/NotFound"
 
 
@@ -73,6 +74,10 @@ const Routes = () => {
                 {
                     path: "/loans",
                     element: <Loans />,
+                },
+                {
+                    path: "/loans/:loanId/payoff",
+                    element: <LoanPayoff />,
                 },
                 {
                     path: "/loans/take",

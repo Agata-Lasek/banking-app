@@ -7,6 +7,7 @@ const LoanTableElement = ({ loan }) => {
     if (!loan) return ""
     const takeOutDate = new Date(loan.createdAt)
     const paidAtDate = loan.paidAt ? new Date(loan.paidAt) : ""
+
     return (
         <tr className="border-b bg-gray-800 border-gray-700">
             <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">
@@ -19,7 +20,7 @@ const LoanTableElement = ({ loan }) => {
                 {paidAtDate ? paidAtDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : "Not paid yet"}
             </td>
             <td className="px-6 py-4">
-                <button className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Payoff</button>
+                {!paidAtDate ? <Link to={`/loans/${loan.id}/payoff`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Payoff</Link> : ""}
             </td>
         </tr>
     )
@@ -31,6 +32,7 @@ const Loans = () => {
         surname: ""
     })
     const [loans, setLoans] = useState([])
+    const [paidoff, setPaidoff] = useState(false)
 
     const getUser = async() => {
         try {
@@ -46,19 +48,20 @@ const Loans = () => {
 
     const getLoans = async() => {
         try {
-            const response = await client.get("/me/loans")
+            const response = await client.get("/me/loans", { params: { paidoff: paidoff } })
             setLoans(response.data.items)
         } catch(error) {
             console.log(error?.response.status)
         }
     }
 
-        useEffect(() => {
-            const fetchData = async () => {
-                await Promise.all([getUser(), getLoans()]);
-            };
-            fetchData();
-        }, [])
+    useEffect(() => {
+        getUser()
+    }, [])
+
+    useEffect(() => {
+        getLoans()
+    }, [paidoff])
 
     return (
         <>
@@ -67,9 +70,14 @@ const Loans = () => {
                <div className="w-full mx-auto max-w-5xl justify-between flex flex-wrap space-y-3">
                    <h1 className="text-white w-screen text-3xl font-bold py-4">Loans</h1>
                    <div className="overflow-x-auto border border-gray-700 rounded-lg w-full">
-                       <div className="bg-gray-800">
-                           <h2 className="px-5 pt-5 text-lg font-semibold text-left text-white">Already taken out loans</h2>                          
-                           <p className="px-5 pb-5 mt-1 text-sm font-normal text-gray-400">Remember that you can take out an unlimited number of loans, however, the day will come when you will have to pay them all back.</p>
+                       <div className="pt-5 px-5 bg-gray-800">
+                           <h2 className="text-lg font-semibold text-left text-white">Already taken out loans</h2>                          
+                           <p className="mt-1 text-sm font-normal text-gray-400">Remember that you can take out an unlimited number of loans, however, the day will come when you will have to pay them all back.</p>
+                           <div className="my-2 inline-flex items-center">
+                                <p className="text-gray-300 me-4">Show also:</p>
+                                <input id="paidoff" type="checkbox" onChange={(e) => setPaidoff(e.target.checked)} className="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600" />
+                                <label htmlFor="paidoff" className="ms-2 text-sm font-medium text-gray-300">Paid off</label>
+                            </div>
                        </div>
                        <table className="w-full text-sm text-left text-gray-400">
                            <thead className="text-xs uppercase bg-gray-700 text-gray-400">
