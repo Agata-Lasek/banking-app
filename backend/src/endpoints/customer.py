@@ -1,4 +1,10 @@
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    status,
+    Query,
+    Depends
+)
 
 from src.dependencies import SessionDep, CurrentCustomerDep, ValidCustomerDep
 from src.schemas import (
@@ -8,6 +14,8 @@ from src.schemas import (
     Card,
     CustomerCreate,
     AccountCreate,
+    Transaction,
+    TransactionParams,
     Loan,
     GenericMultipleItems
 )
@@ -130,6 +138,21 @@ def get_all_customer_cards(
 ) -> GenericMultipleItems[Card]:
     cards = crud.card.get_customer_cards(session, customer.id, expired, blocked, offset, limit)
     return GenericMultipleItems[Card](items=[Card(**vars(c)) for c in cards])
+
+
+@router.get(
+    "/{customer_id}/transactions",
+    summary="Get customer transactions",
+    response_model=GenericMultipleItems[Transaction]
+)
+def get_current_customer_transactions(
+        params: TransactionParams = Depends(),
+        *,
+        session: SessionDep,
+        customer: ValidCustomerDep
+) -> GenericMultipleItems[Transaction]:
+    transactions = crud.transaction.get_customer_transactions_by_filter(session, customer.id, params)
+    return GenericMultipleItems[Transaction](items=[Transaction(**vars(t)) for t in transactions])
 
 
 @router.get(
