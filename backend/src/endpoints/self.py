@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Query, Depends
+from typing import Annotated
 
 from src.dependencies import SessionDep, CurrentCustomerDep
 from src.schemas import (
@@ -6,6 +7,7 @@ from src.schemas import (
     CustomerUpdate,
     Loan,
     Account,
+    Card,
     Transaction,
     TransactionParams,
     GenericMultipleItems
@@ -60,6 +62,24 @@ def get_current_customer_accounts(
 
 
 @router.get(
+    "/cards",
+    summary="Get current customer cards",
+    response_model=GenericMultipleItems[Card]
+)
+def get_current_customer_cards(
+        expired: Annotated[bool, Query(description="List expired cards")] = True,
+        blocked: Annotated[bool, Query(description="List blocked cards")] = True,
+        offset: int = 0,
+        limit: int = 30,
+        *,
+        session: SessionDep,
+        customer: CurrentCustomerDep
+) -> GenericMultipleItems[Card]:
+    cards = crud.card.get_customer_cards(session, customer.id, expired, blocked, offset, limit)
+    return GenericMultipleItems[Card](items=[Card(**vars(c)) for c in cards])
+
+
+@router.get(
     "/transactions",
     summary="Get current customer transactions",
     response_model=GenericMultipleItems[Transaction]
@@ -81,9 +101,11 @@ def get_current_customer_transactions(
 )
 def get_current_customer_loans(
         paidoff: bool = Query(False, description="List also paid off loans"),
+        offset: int = 0,
+        limit: int = 30,
         *,
         session: SessionDep,
         customer: CurrentCustomerDep
 ) -> GenericMultipleItems[Loan]:
-    loans = crud.loan.get_customer_loans(session, customer.id, paidoff)
+    loans = crud.loan.get_customer_loans(session, customer.id, paidoff, offset, limit)
     return GenericMultipleItems[Loan](items=[Loan(**vars(l)) for l in loans])

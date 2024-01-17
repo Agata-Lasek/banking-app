@@ -91,11 +91,13 @@ def get_account_cards(
         account_id: int,
         expired: Annotated[bool, Query(description="List expired cards")] = True,
         blocked: Annotated[bool, Query(description="List blocked cards")] = True,
+        offset: int = 0,
+        limit: int = 30,
         *,
         session: SessionDep,
         _: ValidAccountOwnerDep
 ) -> GenericMultipleItems[Card]:
-    cards = crud.card.get_account_cards(session, account_id, expired, blocked)
+    cards = crud.card.get_account_cards(session, account_id, expired, blocked, offset, limit)
     return GenericMultipleItems[Card](items=[Card(**vars(c)) for c in cards])
 
 
@@ -114,7 +116,9 @@ def create_account_card(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Only checking and foreign currency accounts can have cards"
         )
-    cards = crud.card.get_account_cards(session, account_id, expired=False, blocked=False)
+    cards = crud.card.get_account_cards(
+        session, account_id, expired=False, blocked=False, offset=0, limit=MAX_ACTIVE_CARDS_PER_ACCOUNT
+    )
     if len(cards) >= MAX_ACTIVE_CARDS_PER_ACCOUNT:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

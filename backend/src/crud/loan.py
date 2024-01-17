@@ -16,10 +16,18 @@ def get_loan_by_id(session: Session, loan_id: int) -> Optional[Loan]:
     return session.get(Loan, loan_id)
 
 
-def get_customer_loans(session: Session, customer_id: int, paidoff: bool) -> list[Loan]:
+def get_customer_loans(
+        session: Session,
+        customer_id: int,
+        paidoff: bool,
+        offset: int,
+        limit: int
+) -> list[Loan]:
     statement = (
         select(Loan)
         .where(Loan.customer_id == customer_id)
+        .offset(offset)
+        .limit(limit)
         .order_by(Loan.created_at.desc())
     )
     if not paidoff:
