@@ -107,7 +107,7 @@ const Transactions = () => {
                             <h2 className="p-5 text-lg font-semibold text-left text-white">Transactions history</h2>
                             
                             <form onChange={handleChange} className="px-5 pb-2 flex">
-                                <p className="text-white me-4">Show only:</p>
+                                <p className="text-gray-300 me-4">Show only:</p>
                                 <div className="flex items-center me-4">
                                     <input id="all" type="radio" value="" name="type" defaultChecked className="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600"/>
                                     <label htmlFor="all" className="ms-2 text-sm font-medium text-gray-300">All</label>

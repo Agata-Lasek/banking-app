@@ -68,9 +68,9 @@ const Accounts = () => {
                 <div className="w-full mx-auto max-w-5xl justify-between flex flex-wrap space-y-3">
                     <h1 className="text-white w-screen text-3xl font-bold py-4">Accounts</h1>
                     <div className="overflow-x-auto border border-gray-700 rounded-lg w-full">
-                        <div className="bg-gray-800">
-                            <h2 className="px-5 pt-5 text-lg font-semibold text-left text-white">Already owned accounts</h2>                          
-                            <p className="px-5 pb-5 mt-1 text-sm font-normal text-gray-400">Remember that you can have a maximum of 5 different bank accounts of any type. If you want to close a particular account, contact a bank employee.</p>
+                        <div className="p-5 bg-gray-800">
+                            <h2 className="text-lg font-semibold text-left text-white">Already owned accounts</h2>                          
+                            <p className="mt-1 text-sm font-normal text-gray-400">Remember that you can have a maximum of 5 different bank accounts of any type. If you want to close a particular account, contact a bank employee.</p>
                         </div>
                         <table className="w-full text-sm text-left text-gray-400">
                             <thead className="text-xs uppercase bg-gray-700 text-gray-400">
