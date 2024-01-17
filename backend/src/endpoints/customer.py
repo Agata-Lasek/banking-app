@@ -5,6 +5,7 @@ from src.schemas import (
     Customer,
     CustomerUpdate,
     Account,
+    Card,
     CustomerCreate,
     AccountCreate,
     Loan,
@@ -114,15 +115,35 @@ def create_account(
 
 
 @router.get(
+    "/{customer_id}/cards",
+    summary="Get customer cards",
+    response_model=GenericMultipleItems[Card]
+)
+def get_all_customer_cards(
+        expired: bool = Query(True, description="List also expired cards"),
+        blocked: bool = Query(True, description="List also blocked cards"),
+        offset: int = 0,
+        limit: int = 30,
+        *,
+        session: SessionDep,
+        customer: ValidCustomerDep
+) -> GenericMultipleItems[Card]:
+    cards = crud.card.get_customer_cards(session, customer.id, expired, blocked, offset, limit)
+    return GenericMultipleItems[Card](items=[Card(**vars(c)) for c in cards])
+
+
+@router.get(
     "/{customer_id}/loans",
     summary="Get customer loans",
     response_model=GenericMultipleItems[Loan]
 )
 def get_all_customer_loans(
         paidoff: bool = Query(False, description="List also paid off loans"),
+        offset: int = 0,
+        limit: int = 30,
         *,
         session: SessionDep,
         customer: ValidCustomerDep
 ) -> GenericMultipleItems[Loan]:
-    loans = crud.loan.get_customer_loans(session, customer.id, paidoff)
+    loans = crud.loan.get_customer_loans(session, customer.id, paidoff, offset, limit)
     return GenericMultipleItems[Loan](items=[Loan(**vars(l)) for l in loans])

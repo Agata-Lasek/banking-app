@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import select
+from sqlalchemy.sql.expression import select, Select
 from typing import Optional
 from datetime import (
     datetime,
@@ -24,23 +24,56 @@ def get_card_by_account_id(session: Session, account_id: int) -> Optional[Card]:
     ).scalar_one_or_none()
 
 
-def get_account_cards(
+def get_filtered_cards(
         session: Session,
-        account_id: int,
+        statement: Select,
         expired: bool,
-        blocked: bool
+        blocked: bool,
+        offset: int,
+        limit: int
 ) -> list[Card]:
-    statement = (
-        select(Card)
-        .where(Card.account_id == account_id)
-        .order_by(Card.expiry_at.desc())
-    )
+    """
+    Get a list of cards for init statement.
+
+    Returns:
+        List of cards ordered by expiry date in descending order.
+    """
     if not expired:
         statement = statement.where(Card.expiry_at > datetime.now(timezone.utc))
     if not blocked:
         statement = statement.where(Card.blocked_at.is_(None))
 
+    statement = (
+        statement
+        .offset(offset)
+        .limit(limit)
+        .order_by(Card.expiry_at.desc())
+    )
     return list(session.execute(statement).scalars().all())
+
+
+def get_customer_cards(
+        session: Session,
+        customer_id: int,
+        expired: bool,
+        blocked: bool,
+        offset: int,
+        limit: int
+) -> list[Card]:
+    statement = select(Card).join(Card.account).where(Card.account.has(customer_id=customer_id))
+    return get_filtered_cards(session, statement, expired, blocked, offset, limit)
+
+
+def get_account_cards(
+        session: Session,
+        account_id: int,
+        expired: bool,
+        blocked: bool,
+        offset: int,
+        limit: int
+) -> list[Card]:
+    statement = select(Card).where(Card.account_id == account_id)
+    return get_filtered_cards(session, statement, expired, blocked, offset, limit)
 
 
 def create_card(session: Session, account_id: int) -> Card:
