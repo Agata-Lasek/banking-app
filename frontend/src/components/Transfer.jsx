@@ -71,14 +71,12 @@ const Transfer = () => {
     }
 
     useEffect(() => {
-        const fetchData = async () => {
-            await Promise.all([
-                getUser(),
-                getAccounts()
-            ]);
-        };
-        fetchData();
+        getUser()
     }, [])
+
+    useEffect(() => {
+        getAccounts()
+    }, [success])
 
     return (
          <>

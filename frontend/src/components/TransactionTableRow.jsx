@@ -1,12 +1,13 @@
 import { maskAccountNumber, findRelatedAccount } from "../utils/accounts"
 
+
 const TransactionTableRow = ({ transaction, accounts }) => {
     if (!transaction) return ""
     const account  = findRelatedAccount(transaction, accounts)
-    const amount = transaction.balanceAfter - transaction.balanceBefore
+    const amount = (transaction.balanceAfter - transaction.balanceBefore).toFixed(2)
     const date = new Date(transaction.createdAt)
-    const shortDescription = transaction.description.length > 50 ? `${transaction.description.substring(0, 50).trim()}...` : transaction.description;
-
+    const shortDescription = transaction.description.length > 50 ? `${transaction.description.substring(0, 50).trim()}...` : transaction.description
+    
     return (
         <tr className="border-b bg-gray-800 border-gray-700">
             <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">

@@ -18,7 +18,7 @@ const AccountListElement = ({ account }) => {
                     </p>
                 </div>
                 <div className="inline-flex items-center text-base font-semibold text-white">
-                    {account.balance} {account.currency}
+                    {account.balance.toFixed(2)} {account.currency}
                 </div>
             </div>
         </li>

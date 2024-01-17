@@ -16,7 +16,7 @@ const AccountTableElement = ({ account }) => {
                 {show ? formatToIBAN(account.number) : maskAccountNumber(account.number)}
             </td>
             <td className="px-6 py-4">
-                {account.balance} {account.currency}
+                {account.balance.toFixed(2)} {account.currency}
             </td>
             <td className="px-6 py-4 text-right">
                 <button onClick={() => setShow(!show)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">{ !show ? "Show account number" : "Hide account number"}</button>
