@@ -48,3 +48,9 @@ Version 0.7.0:
 Version 0.8.0:
     * Fix closing session after each request,
     * Add "/me/transactions" endpoint to list transactions of current customer.
+
+Version 0.9.0:
+    * Add "/{customer_id}/transactions" endpoint to list customer's transactions,
+    * Add possibility to get customer's cards,
+    * Add possibility to paginate customer's loans,
+    * Add possibility to paginate customer's cards.
