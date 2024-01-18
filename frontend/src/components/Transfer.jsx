@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import client from "../api/axios"
 import Sidebar from "./Sidebar"
-import { maskAccountNumber } from "../utils/accounts"
+import { maskAccountNumber } from "../utils/account"
 import { handleError } from "../utils/api"
 
 const Transfer = () => {

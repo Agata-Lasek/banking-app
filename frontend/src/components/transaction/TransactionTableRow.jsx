@@ -1,4 +1,4 @@
-import { maskAccountNumber, findRelatedAccount } from "../utils/accounts"
+import { maskAccountNumber, findRelatedAccount } from "../../utils/account"
 
 
 const TransactionTableRow = ({ transaction, accounts }) => {

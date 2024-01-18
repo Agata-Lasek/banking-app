@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import client from "../api/axios"
-import Sidebar from "./Sidebar"
-import { handleError } from "../utils/api"
-import NotFound from "./NotFound"
+import client from "../../api/axios"
+import Sidebar from "../Sidebar"
+import { handleError } from "../../utils/api"
+import NotFound from "../NotFound"
 
 
 const CardActivate = () => {

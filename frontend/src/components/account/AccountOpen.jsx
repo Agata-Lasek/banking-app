@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
-import client from "../api/axios"
-import Sidebar from "./Sidebar"
-import { AccountType, CurrencyType } from "../utils/accounts"
-import { handleError } from "../utils/api"
+import client from "../../api/axios"
+import Sidebar from "../Sidebar"
+import { AccountType, CurrencyType } from "../../utils/account"
+import { handleError } from "../../utils/api"
 
 const shouldDisplayCurrency = (accountType, currency) => {
     const isForeignAccount = accountType === AccountType.FOREIGN_CURRENCY

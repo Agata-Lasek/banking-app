@@ -1,35 +1,8 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import client from "../api/axios"
-import Sidebar from "./Sidebar"
-import { maskAccountNumber } from "../utils/accounts"
-import { maskCardNumber, getCardStatus, findRelatedAccount } from "../utils/cards"
-
-const CardTableElement = ({ card, accounts }) => {
-    if (!card) return ""
-    const account = findRelatedAccount(card, accounts)
-
-    return (
-        <tr className="border-b bg-gray-800 border-gray-700">
-            <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">
-                {maskCardNumber(card.number)}
-            </th>
-            <td className="px-6 py-4">
-                {getCardStatus(card)}
-            </td>
-            <td className="px-6 py-4">
-                {account ? maskAccountNumber(account.number) : ""}
-            </td>
-            <td className="px-6 py-4">
-                {account ? `${account.balance} ${account.currency}` : ""}
-            </td>
-            <td className="px-6 py-4">
-                <Link to={`/cards/${card.id}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Details</Link>
-            </td>
-        </tr>
-    )
-}
-
+import client from "../../api/axios"
+import Sidebar from "../Sidebar"
+import CardTableElement from "./CartTableElement"
 
 const Cards = () => {
     const [user, setUser] = useState({
@@ -102,7 +75,7 @@ const Cards = () => {
                     <div className="overflow-x-auto border border-gray-700 rounded-lg w-full">
                         <div className="pt-5 px-5 flex flex-col bg-gray-800">
                             <h2 className="text-lg font-semibold text-left text-white">Already owned cards</h2>
-                            <p className="mt-1 text-sm font-normal text-gray-400">Remember that you can take out an unlimited number of loans, however, the day will come when you will have to pay them all back.</p>
+                            <p className="mt-1 text-sm font-normal text-gray-400">Remember that you can only have three active cards connected to one account.</p>
                             <div className="my-2 inline-flex items-center space-x-4">
                                 <p className="text-gray-300">Show also:</p>
                                 <div>

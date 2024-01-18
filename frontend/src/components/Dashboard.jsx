@@ -2,8 +2,8 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import client from "../api/axios"
 import Sidebar from "./Sidebar"
-import { maskAccountNumber } from "../utils/accounts"
-import TransactionTableRow from "./TransactionTableRow"
+import { maskAccountNumber } from "../utils/account"
+import TransactionTableRow from "./transaction/TransactionTableRow"
 
 const AccountListElement = ({ account }) => {
     return account ? (
