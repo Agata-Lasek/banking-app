@@ -9,7 +9,7 @@ from datetime import (
 
 from src.models import Card
 from src.core import security
-from src.utils import generate_account_number, generate_cvv
+from src.utils import generate_card_number, generate_cvv
 
 DEFAULT_EXPIRY_YEARS = 3
 
@@ -79,7 +79,7 @@ def get_account_cards(
 def create_card(session: Session, account_id: int) -> Card:
     card = Card(
         account_id=account_id,
-        number=generate_account_number(),
+        number=generate_card_number(),
         cvv=generate_cvv(),
         expiry_at=datetime.now(timezone.utc) + timedelta(days=DEFAULT_EXPIRY_YEARS * 365)
     )

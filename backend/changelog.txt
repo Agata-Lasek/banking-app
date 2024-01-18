@@ -54,3 +54,6 @@ Version 0.9.0:
     * Add possibility to get customer's cards,
     * Add possibility to paginate customer's loans,
     * Add possibility to paginate customer's cards.
+
+Version 0.9.1:
+    * Fix generating card number.
