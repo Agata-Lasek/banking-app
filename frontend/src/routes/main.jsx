@@ -9,6 +9,9 @@ import Dashboard from "../components/Dashboard"
 import Accounts from "../components/Accounts"
 import AccountOpen from "../components/AccountOpen"
 import Cards from "../components/Cards"
+import CardDetails from "../components/CardDetails"
+import CardActivate from "../components/CardActivate"
+import CardAdd from "../components/CardAdd"
 import Transactions from "../components/Transactions"
 import Transfer from "../components/Transfer"
 import Loans from "../components/Loans"
@@ -67,6 +70,18 @@ const Routes = () => {
                 {
                     path: "/cards",
                     element: <Cards />
+                },
+                {
+                    path: "/cards/:cardId",
+                    element: <CardDetails />
+                },
+                {
+                    path: "/cards/:cardId/activate",
+                    element: <CardActivate />
+                },
+                {
+                    path: "/cards/add",
+                    element: <CardAdd />
                 },
                 {
                     path: "/transactions",
