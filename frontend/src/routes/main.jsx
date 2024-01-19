@@ -6,14 +6,18 @@ import Signup from "../components/auth/Signup"
 import Logout from "../components/auth/Logout"
 import Customer from "../components/Customer"
 import Dashboard from "../components/Dashboard"
-import Accounts from "../components/Accounts"
-import AccountOpen from "../components/AccountOpen"
-import Cards from "../components/Cards"
-import Transactions from "../components/Transactions"
+import Accounts from "../components/account/Accounts"
+import AccountOpen from "../components/account/AccountOpen"
+import Cards from "../components/card/Cards"
+import CardDetails from "../components/card/CardDetails"
+import CardActivate from "../components/card/CardActivate"
+import CardAdd from "../components/card/CardAdd"
+import ATM from "../components/ATM"
+import Transactions from "../components/transaction/Transactions"
 import Transfer from "../components/Transfer"
-import Loans from "../components/Loans"
-import LoanTake from "../components/LoanTake"
-import LoanPayoff from "../components/LoanPayoff"
+import Loans from "../components/loan/Loans"
+import LoanTake from "../components/loan/LoanTake"
+import LoanPayoff from "../components/loan/LoanPayoff"
 import NotFound from "../components/NotFound"
 
 
@@ -67,6 +71,22 @@ const Routes = () => {
                 {
                     path: "/cards",
                     element: <Cards />
+                },
+                {
+                    path: "/cards/:cardId",
+                    element: <CardDetails />
+                },
+                {
+                    path: "/cards/:cardId/activate",
+                    element: <CardActivate />
+                },
+                {
+                    path: "/cards/add",
+                    element: <CardAdd />
+                },
+                {
+                    path: "/atm",
+                    element: <ATM />
                 },
                 {
                     path: "/transactions",
