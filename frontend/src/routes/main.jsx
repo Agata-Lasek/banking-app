@@ -12,6 +12,7 @@ import Cards from "../components/card/Cards"
 import CardDetails from "../components/card/CardDetails"
 import CardActivate from "../components/card/CardActivate"
 import CardAdd from "../components/card/CardAdd"
+import ATM from "../components/ATM"
 import Transactions from "../components/transaction/Transactions"
 import Transfer from "../components/Transfer"
 import Loans from "../components/loan/Loans"
@@ -82,6 +83,10 @@ const Routes = () => {
                 {
                     path: "/cards/add",
                     element: <CardAdd />
+                },
+                {
+                    path: "/atm",
+                    element: <ATM />
                 },
                 {
                     path: "/transactions",
