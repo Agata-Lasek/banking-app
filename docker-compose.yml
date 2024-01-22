@@ -3,8 +3,8 @@ version: "3.8"
 services:
   postgres:
     image: postgres:16
-    ports:
-      - "5432:5432"
+    networks:
+      - banking-app-network
     volumes:
       - postgres-data:/var/lib/postgresql/data/pgdata
     env_file:
@@ -18,6 +18,8 @@ services:
       - pgadmin-data:/var/lib/pgadmin
     ports:
       - "5050:5050"
+    networks:
+      - banking-app-network
     depends_on:
       - postgres
     env_file:
@@ -29,12 +31,33 @@ services:
       dockerfile: Dockerfile
     ports:
         - "3004:3004"
+    networks:
+      - banking-app-network
     volumes:
         - ./backend/src:/code/backend/src
     depends_on:
       - postgres
     env_file:
       - .env
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    networks:
+      - banking-app-network
+    volumes:
+      - ./frontend/src:/code/frontend/src
+    depends_on:
+      - backend
+    env_file:
+      - .env
+
+networks:
+  banking-app-network:
+    driver: bridge
 
 volumes:
   postgres-data:

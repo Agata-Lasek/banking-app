@@ -6,3 +6,6 @@ services:
     volumes:
         - ./backend/src:/code/backend/src
         - ./backend/alembic:/code/backend/alembic
+  
+  frontend:
+    command: ["dev"]
