@@ -15,6 +15,7 @@ from src.models import (
     Account
 )
 from src.schemas import TransactionParams
+from src.utils import get_exchange_rate
 
 
 def get_transaction_by_id(session: Session, transaction_id: int) -> Optional[Transaction]:
@@ -155,7 +156,9 @@ def handle_internal_transfer(
     )
     sender.balance = sender.balance - amount
 
-    # TODO: Implement currency conversion
+    if sender.currency != receiver.currency:
+        amount = amount * get_exchange_rate(sender.currency, receiver.currency)
+
     _ = create_transaction(
         session, receiver.id, receiver.balance, receiver.balance + amount, description,
         TransactionType.TRANSFER_IN
